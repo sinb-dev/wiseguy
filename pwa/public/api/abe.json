@@ -1,0 +1,9 @@
+{
+    "course" : "Databaseprogrammering",
+    "subject" : "Databasetyper",
+    "phrases" : [
+        { "id" : 1, "text" : "ORM"},
+        { "id" : 2, "text" : "MongoDB"},
+        { "id" : 3, "text" : "SQL"}
+    ]
+}

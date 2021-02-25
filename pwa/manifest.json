@@ -1,0 +1,8 @@
+{
+    "background_color": "white",
+    "description": "This is a description",
+    "display": "fullscreen",
+    "name": "Cute cat pictures",
+    "short_name": "Cats",
+    "start_url": "/index.html"
+}
