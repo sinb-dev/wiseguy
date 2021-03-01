@@ -1,0 +1,25 @@
+version: "3"
+services:
+  web:
+    build: pwa/.
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+  api:
+    build: api/.
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      ASPNETCORE_URLS: "https://+:443"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/certificate/wiseguy.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "HelloWorld"
+    depends_on:
+      - db
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      SA_PASSWORD: "Cloud9-district"
+      ACCEPT_EULA: "Y"
+

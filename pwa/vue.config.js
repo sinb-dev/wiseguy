@@ -13,9 +13,5 @@ module.exports = {
       maskIcon: 'icon.png',
       msTileImage: 'icon.png'
     }
-  },
-  devServer: {
-    https: true,
-    disableHostCheck : true
   }
 };

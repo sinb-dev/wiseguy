@@ -1,23 +1,36 @@
 FROM node:lts-alpine
 
-# install simple http server for serving static content
-RUN npm install -g http-server
-
 # make the 'app' folder the current working directory
 WORKDIR /app
 
-# copy both 'package.json' and 'package-lock.json' (if available)
-COPY package*.json ./
+#Attempt to fix missing babel dependency
+ENV PATH /app/node_modules/.bin:$PATH
 
-RUN npm install -g @vue/cli-service
+# copy both 'package.json' and 'package-lock.json' (if available)
+COPY package.json /app/package.json
+COPY vue.config.js ./vue.config.js
+COPY src src
 
 # install project dependencies
 RUN npm install
 
-# copy project files and folders to the current working directory (i.e. 'app' folder)
-COPY . .
-# build app for production with minification
-RUN npm run build
+# Install Vue necessary for building the environment
+RUN npm install -g @vue/cli-service
 
-EXPOSE 8080
-CMD [ "http-server", "dist" ]
+
+# BUILD APP FOR PRODUCTION WITH A MINIFIED VERSION - comment out if not necessary
+# Build the development files (html, javascript and css. Will be placed in dist)
+#RUN npm run build
+# Install simple http server for serving production files
+#RUN npm install -g http-server
+
+#
+
+
+
+# CHOOSE EITHER DEVELOPMENT OR PRODUCTION - comment out the other
+# Run development server over https
+CMD ["vue-cli-service","serve","--https"]
+
+# Run production server over https
+#CMD ["http-server", "dist", "--ssl", ""]
