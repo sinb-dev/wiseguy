@@ -3,3 +3,4 @@ obj
 .vscode
 dist
 node_modules
+wiseguy.pfx

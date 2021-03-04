@@ -59,6 +59,17 @@ namespace wiseguy.Controllers
                 return Ok("OK");
             }
         }
+        [HttpGet("{templateId}")]
+        public async Task<ActionResult<String>> GetTemplateData(int templateId)
+        {
+            using(var context = new WiseGuyContext()) {
+                var template = context.Templates.Include(tpl=>tpl.Phrases).First(t => t.Id == templateId);
+                if (template == null)
+                    return Problem("Unknown template");
+                
+                return Ok(TemplateDTO.Construct(template));
+            }
+        }
 
         [HttpPost("{templateId}/issue")]
         public async Task<ActionResult<String>> IssueTemplateForEmails(int templateId, [FromForm] int maillistId)

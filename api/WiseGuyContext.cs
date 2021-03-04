@@ -16,7 +16,8 @@ namespace wiseguy {
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer(@"Data Source=localhost;Initial Catalog=wiseguy;User id=SA;Password=Cloud9-district;MultipleActiveResultSets=True");
+            //options.UseSqlServer(@"Data Source=localhost;Initial Catalog=wiseguy;User id=SA;Password=Cloud9-district;MultipleActiveResultSets=True");
+            options.UseSqlServer(@"Data Source=localhost;Initial Catalog=wiseguy;User id=SA;Password=T0engage;MultipleActiveResultSets=True");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
