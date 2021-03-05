@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using System.Linq;
 
@@ -16,8 +17,7 @@ namespace wiseguy {
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            //options.UseSqlServer(@"Data Source=localhost;Initial Catalog=wiseguy;User id=SA;Password=Cloud9-district;MultipleActiveResultSets=True");
-            options.UseSqlServer(@"Data Source=localhost;Initial Catalog=wiseguy;User id=SA;Password=T0engage;MultipleActiveResultSets=True");
+            options.UseSqlServer(Startup.CurrentConfiguration.GetConnectionString("localDatabase"));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

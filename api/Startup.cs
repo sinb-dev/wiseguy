@@ -16,10 +16,11 @@ namespace wiseguy
 {
     public class Startup
     {
+        public static IConfiguration CurrentConfiguration {get; private set;}
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
+            CurrentConfiguration = configuration;
         }
 
         public IConfiguration Configuration { get; }
