@@ -12,7 +12,6 @@
 
 <script>
 import EditTemplate from '../components/EditTemplate.vue';
-const axios = import("axios");
 export default {
   components: { 'edit-template' : EditTemplate },
     
@@ -28,7 +27,8 @@ export default {
         load(data) {
             this.course = data.course;
             this.subject = data.subject;
-            this.phrases = data.phraseText;
+            this.phrases = data.phrases;
+            console.log("TemplateManager: "+data.course);
         },
         templateUpdated(data) {
             this.templateData = data;
@@ -44,7 +44,7 @@ export default {
             )
 
             /*this.$root
-             .post( this.$root.server("tpl/update"), data)
+             .post( "tpl/update", data)
              .then(d => console.log(d));*/
         }
     },
@@ -56,11 +56,9 @@ export default {
     mounted() {
         this.templateId = 2;
         if (this.templateId > 0) {
-            console.log(axios)
-//            this.$root
-            axios
-                .get('/tpl/'+this.templateId)
-                .then(reponse => self.load(reponse.data))
+           this.$root
+            .get('tpl/'+this.templateId)
+            .then(reponse => this.load(reponse.data))
         }
     }
 }

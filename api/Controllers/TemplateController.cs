@@ -60,7 +60,7 @@ namespace wiseguy.Controllers
             }
         }
         [HttpGet("{templateId}")]
-        public async Task<ActionResult<String>> GetTemplateData(int templateId)
+        public ActionResult<String> GetTemplateData(int templateId)
         {
             using(var context = new WiseGuyContext()) {
                 var template = context.Templates.Include(tpl=>tpl.Phrases).First(t => t.Id == templateId);

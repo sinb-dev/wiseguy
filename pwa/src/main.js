@@ -10,13 +10,13 @@ Vue.config.productionTip = false
 const LandingPage = EvaluationForm;
 
 const routes = {
-  '^$' : LandingPage,
+  '^/$' : LandingPage,
   '^/eval/[a-z]+/$' : EvaluationForm,
   '^/tpl/$' : TemplateManager,
   '^/tpl/[a-z]./$' : TemplateManager
 }
 const server = 'https://monster.hoxer.net:5001/';
-const axios = import("axios");
+const axios = require("axios");
 const app = new Vue({
   data : {
     currentRoute : document.location.hash.substr(1)
