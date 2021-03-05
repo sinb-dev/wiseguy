@@ -4,3 +4,5 @@ obj
 dist
 node_modules
 wiseguy.pfx
+api/appsettings.json
+api/appsettings.Development.json
