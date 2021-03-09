@@ -2,59 +2,67 @@
     <div>
         <edit-template 
             v-bind:id="templateId" 
-            v-bind:course="course"
-            v-bind:subject="subject"
+            v-bind:course="template.course"
+            v-bind:subject="template.subject"
             v-bind:phraseText="phraseText"
-            v-on:update="templateUpdated"></edit-template>
+            v-on:update="load"></edit-template>
         <button @click="update">Save template</button>
+        <button @click="issue" title="Create copies and send to students for filling">Issue copies to list</button>
+
+        <issue-modal v-if="show_issue_modal"></issue-modal>
     </div>
 </template>
 
 <script>
 import EditTemplate from '../components/EditTemplate.vue';
+import IssueTemplateToMaillist from '../components/IssueTemplateToList.vue';
 export default {
-  components: { 'edit-template' : EditTemplate },
+  components: { 
+        'edit-template' : EditTemplate,
+        'issue-modal' : IssueTemplateToMaillist 
+    },
     
     data() {
         return {
-            templateId : 2,
-            subject : "",
-            course : "",
-            phrases : []
+            templateId : 0,
+            template : {
+                subject : "",
+                course : "",
+                phrases : []
+            },
+            show_issue_modal : false
         }
     },
     methods : {
         load(data) {
-            this.course = data.course;
-            this.subject = data.subject;
-            this.phrases = data.phrases;
-            console.log("TemplateManager: "+data.course);
-        },
-        templateUpdated(data) {
-            this.templateData = data;
+            this.template = data;
         },
         update() {
             var data = new FormData();
-            data.append("id", this.templateId);
-            data.append("course", this.templateData.course);
-            data.append("subject", this.templateData.subject);
+            data.append("Id", this.templateId);
+            data.append("Course", this.template.course);
+            data.append("Subject", this.template.subject);
             
-            this.templateData.phrases.forEach(
-                p => data.append("phrases", p)
+            this.template.phrases.forEach(
+                p => data.append("Phrases", p)
             )
 
-            /*this.$root
-             .post( "tpl/update", data)
-             .then(d => console.log(d));*/
+            var op = this.templateId > 0 ? "tpl/update" : "tpl/new";
+            this.$root
+                .post( op, data)
+                .then(d => console.log(d));
+        },
+        issue : function() {
+            this.show_issue_modal = true;
         }
     },
     computed : {
         phraseText() {
-            return this.phrases.join("\n");
+            return this.template.phrases.join("\n");
         }
     },
     mounted() {
-        this.templateId = 2;
+        this.templateId = parseInt(this.$root.folder(2)) || 0;
         if (this.templateId > 0) {
            this.$root
             .get('tpl/'+this.templateId)

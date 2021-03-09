@@ -17,17 +17,16 @@ namespace wiseguy.Controllers
         }
 
         [HttpPost("new")]
-        public async Task<ActionResult<String>> NewMaillist([FromForm] MaillistNewFormData listdata)
+        public async Task<ActionResult<String>> NewMaillist([FromForm] MaillistNewDTO listdata)
         {
             
             using(var context = new WiseGuyContext()) {
                 Maillist list = listdata.GetMaillist();
 
-                
                 if (list != null) {
                     context.Maillists.Add( list );
                     await context.SaveChangesAsync();
-                    await this.AddParticipants(list.Id, listdata.Emails);
+                    await this.AddParticipants(list.Id, listdata.emails);
                     return Ok("OK");
                 }
             }
@@ -35,9 +34,9 @@ namespace wiseguy.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<String>> UpdateMaillist([FromForm] MaillistUpdateFormData listdata)
+        public async Task<ActionResult<String>> UpdateMaillist([FromForm] MaillistUpdateDTO listdata)
         {
-            if (listdata.Id == 0) {
+            if (listdata.id == 0) {
                 return Problem("Error in data. Id must not be 0");
             }
             if (listdata == null) {
@@ -47,19 +46,19 @@ namespace wiseguy.Controllers
             using(var context = new WiseGuyContext()) {
                 Maillist list = null;
 
-                list = context.Maillists.Include(m => m.Participants).First(m => m.Id == listdata.Id);
+                list = context.Maillists.Include(m => m.Participants).First(m => m.Id == listdata.id);
 
                 if (list == null)
                     return Problem("Invalid request data");
 
-                list.Name = listdata.Name;
+                list.Name = listdata.name;
                 
                 //If we received a new list of emails remove the old and use the new
-                if (listdata.Emails != null) {
+                if (listdata.emails != null) {
                     list.Participants.Clear();
                     await context.SaveChangesAsync();
 
-                    await this.AddParticipants(list.Id, listdata.Emails);   
+                    await this.AddParticipants(list.Id, listdata.emails);   
                 }
                 await context.SaveChangesAsync();
                 return Ok("OK");
@@ -67,6 +66,37 @@ namespace wiseguy.Controllers
             
         }
 
+        [HttpGet("{mailListId}")]
+        public ActionResult<String> GetTemplateData(int mailListId)
+        {
+            using(var context = new WiseGuyContext()) {
+                Maillist maillist = null;
+                try {
+                    maillist = context.Maillists.Include(maillist=>maillist.Participants).First(m => m.Id == mailListId);
+                } catch {}
+
+                if (maillist == null)
+                    return Problem("Unknown template");
+                
+                return Ok(MaillistUpdateDTO.Construct(maillist));
+            }
+        }
+        
+        [HttpGet("lists")]
+        public ActionResult<String> GetLists()
+        {
+            using(var context = new WiseGuyContext()) {
+                List<MaillistUpdateDTO> dtos = new List<MaillistUpdateDTO>();
+                try {
+                    var lists = context.Maillists;//.Include(list=>list.Participants);
+                    foreach (var l in lists) {
+                        dtos.Add(MaillistUpdateDTO.Construct(l));
+                    }
+                } catch {}
+
+                return Ok(dtos);
+            }
+        }
 
         [HttpPut("{mailListId}/participant/add")]
         public async Task<ActionResult<String>> AddParticipants(int mailListId, [FromBody] IList<string> emails)

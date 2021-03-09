@@ -63,13 +63,18 @@ namespace wiseguy.Controllers
         public ActionResult<String> GetTemplateData(int templateId)
         {
             using(var context = new WiseGuyContext()) {
-                var template = context.Templates.Include(tpl=>tpl.Phrases).First(t => t.Id == templateId);
+                SheetTemplate template = null;
+                try {
+                    template = context.Templates.Include(tpl=>tpl.Phrases).First(t => t.Id == templateId);
+                } catch {}
+
                 if (template == null)
                     return Problem("Unknown template");
                 
                 return Ok(TemplateDTO.Construct(template));
             }
         }
+        
 
         [HttpPost("{templateId}/issue")]
         public async Task<ActionResult<String>> IssueTemplateForEmails(int templateId, [FromForm] int maillistId)
@@ -88,7 +93,6 @@ namespace wiseguy.Controllers
                 await context.SaveChangesAsync();
                 return Ok("OK");
             }
-            return Ok("Incorrect sheet copy data");
         }
 
         [HttpDelete("delete/{id}")]

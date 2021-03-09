@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import EvaluationForm from './pages/EvaluationForm.vue'
 import TemplateManager from './pages/TemplateManager.vue'
+import ListManager from './pages/ListManager.vue'
 import NotFound from './pages/NotFound.vue'
 import wb from "./registerServiceWorker";
 Vue.prototype.$workbox = wb;
@@ -13,13 +14,15 @@ const routes = {
   '^/$' : LandingPage,
   '^/eval/[a-z]+/$' : EvaluationForm,
   '^/tpl/$' : TemplateManager,
-  '^/tpl/[a-z]./$' : TemplateManager
+  '^/tpl/[0-9]+/$' : TemplateManager,
+  '^/list/$' : ListManager,
+  '^/list/[0-9]+/$' : ListManager
 }
-const server = 'https://monster.hoxer.net:5001/';
+const server = 'https://localhost:5001/';
 const axios = require("axios");
 const app = new Vue({
   data : {
-    currentRoute : document.location.hash.substr(1)
+    currentRoute : ""
   },
   methods : {
     server(request) {
@@ -31,6 +34,13 @@ const app = new Vue({
     },
     get(path) {
       return axios.get(server+path)
+    },
+    folder(idx) {
+      idx = parseInt(idx);
+      var folders = this.currentRoute.split("/");
+      if (typeof(folders[idx]) != "undefined") {
+        return folders[idx];
+      }
     }
   },
   computed : {
@@ -60,7 +70,9 @@ const app = new Vue({
     }
   }
 }).$mount('#app')
-console.log(app.currentRoute);
 window.onhashchange = function() {
   app.currentRoute = document.location.hash.substr(1)
+  if (app.currentRoute.substr(-1,1) != "/")
+    document.location.hash += "/";
 }
+window.onhashchange();
