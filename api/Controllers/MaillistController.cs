@@ -85,16 +85,18 @@ namespace wiseguy.Controllers
         [HttpGet("lists")]
         public ActionResult<String> GetLists()
         {
+            
             using(var context = new WiseGuyContext()) {
-                List<MaillistUpdateDTO> dtos = new List<MaillistUpdateDTO>();
+                MaillistNameAndEmailCount dto = new MaillistNameAndEmailCount();
+
                 try {
-                    var lists = context.Maillists;//.Include(list=>list.Participants);
+                    var lists = context.Maillists.Include(list=>list.Participants);
                     foreach (var l in lists) {
-                        dtos.Add(MaillistUpdateDTO.Construct(l));
+                        dto.Add(l.Name, l.Participants.Count);
                     }
                 } catch {}
 
-                return Ok(dtos);
+                return Ok(dto.GetList());
             }
         }
 
