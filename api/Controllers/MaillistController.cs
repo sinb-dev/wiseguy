@@ -92,7 +92,7 @@ namespace wiseguy.Controllers
                 try {
                     var lists = context.Maillists.Include(list=>list.Participants);
                     foreach (var l in lists) {
-                        dto.Add(l.Name, l.Participants.Count);
+                        dto.Add(l.Id, l.Name, l.Participants.Count);
                     }
                 } catch {}
 

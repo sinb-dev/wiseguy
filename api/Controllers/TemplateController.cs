@@ -80,11 +80,14 @@ namespace wiseguy.Controllers
         public async Task<ActionResult<String>> IssueTemplateForEmails(int templateId, [FromForm] int maillistId)
         {
             using(var context = new WiseGuyContext()) {
-                var template = context.Templates.First(t => t.Id == templateId);
+                SheetTemplate template = null;
+                try {
+                    template = context.Templates.First(t => t.Id == templateId);
+                } catch {}
                 if (template == null)
                     return Problem("Unknown template");
                 
-                var maillist = context.Maillists.First(m => m.Id == maillistId);
+                var maillist = context.Maillists.Include(m => m.Participants).First(m => m.Id == maillistId);
                 if (maillist == null) 
                     return Problem("Unknown mail list");
 

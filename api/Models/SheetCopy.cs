@@ -13,7 +13,7 @@ namespace wiseguy
         public SheetTemplate SheetTemplate { get; set; }
         public string Course {get;set;}
         public string Subject {get;set;}
-        IList<Answer> Answers { get; set; } = new List<Answer>();
+        public IList<Answer> Answers { get; set; } = new List<Answer>();
         public string Token { get; set; }
         public SheetIssue Issue { get; set; }
         public DateTime Completed { get; set; }

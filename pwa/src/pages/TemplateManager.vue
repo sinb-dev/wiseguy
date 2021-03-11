@@ -9,7 +9,7 @@
         <button @click="update">Save template</button>
         <button @click="issue" title="Create copies and send to students for filling">Issue copies to list</button>
 
-        <issue-modal v-if="show_issue_modal"></issue-modal>
+        <issue-modal v-if="show_issue_modal" v-bind:lists="maillists" v-bind:templateId="templateId"></issue-modal>
     </div>
 </template>
 
@@ -30,7 +30,8 @@ export default {
                 course : "",
                 phrases : []
             },
-            show_issue_modal : false
+            show_issue_modal : false,
+            maillists : []
         }
     },
     methods : {
@@ -67,6 +68,8 @@ export default {
            this.$root
             .get('tpl/'+this.templateId)
             .then(reponse => this.load(reponse.data))
+
+            this.$root.get("list/lists").then( response => this.maillists = response.data);
         }
     }
 }

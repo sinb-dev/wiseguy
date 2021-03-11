@@ -32,6 +32,16 @@ namespace wiseguy {
                 .WithMany(s=>s.Copies)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<SheetCopy>()
+                .HasOne(p=>p.Issue)
+                .WithMany(s=>s.Copies)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Answer>()
+                .HasOne(a=>a.Sheet)
+                .WithMany(s=>s.Answers)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
     }

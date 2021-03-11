@@ -225,8 +225,9 @@ namespace api.Migrations
             modelBuilder.Entity("wiseguy.SheetCopy", b =>
                 {
                     b.HasOne("wiseguy.SheetIssue", "Issue")
-                        .WithMany()
-                        .HasForeignKey("IssueId");
+                        .WithMany("Copies")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("wiseguy.SheetTemplate", "SheetTemplate")
                         .WithMany("Copies")
@@ -251,6 +252,11 @@ namespace api.Migrations
                     b.Navigation("Maillist");
 
                     b.Navigation("SheetTemplate");
+                });
+
+            modelBuilder.Entity("wiseguy.SheetIssue", b =>
+                {
+                    b.Navigation("Copies");
                 });
 
             modelBuilder.Entity("wiseguy.SheetTemplate", b =>

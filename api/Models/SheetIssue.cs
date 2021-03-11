@@ -8,7 +8,7 @@ namespace wiseguy {
         [Key]
         public int Id {get;set;}
         public SheetTemplate SheetTemplate { get; set; }
-        List<SheetCopy> Copies { get; set; }
+        public List<SheetCopy> Copies { get; set; }
         public DateTime Issued {get;set;}
         public Maillist Maillist {get;set;}
         
@@ -20,7 +20,11 @@ namespace wiseguy {
                 issue.Issued = DateTime.Now;
                 issue.Maillist = list;
                 issue.Copies = issue.createCopies(list.Participants, template);
+                foreach (var c in issue.Copies) {
+                    context.Copies.Add(c);
+                }
                 context.Issues.Add(issue);
+                context.SaveChangesAsync();
                 return issue;
             }
         }
@@ -32,7 +36,11 @@ namespace wiseguy {
                 issue.Issued = DateTime.Now;
                 var list = Controllers.ParticipantController.CreateParticipantsFromEmails(emails);
                 issue.Copies = issue.createCopies(list, template);
+                foreach (var c in issue.Copies) {
+                    context.Copies.Add(c);
+                }
                 context.Issues.Add(issue);
+                context.SaveChangesAsync();
                 return issue;
             }
         }
@@ -46,6 +54,7 @@ namespace wiseguy {
                 copy.Email = p.Email;
                 copy.Issue = this;
                 copy.Name = p.Name;
+                copies.Add(copy);
             }
             return copies;
         }
