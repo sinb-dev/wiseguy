@@ -74,10 +74,9 @@ namespace wiseguy.Controllers
                 return Ok(TemplateDTO.Construct(template));
             }
         }
-        
 
         [HttpPost("{templateId}/issue")]
-        public async Task<ActionResult<String>> IssueTemplateForEmails(int templateId, [FromForm] int maillistId)
+        public async Task<ActionResult<IssuedCopiesDTO>> IssueTemplateForEmails(int templateId, [FromForm] int maillistId)
         {
             using(var context = new WiseGuyContext()) {
                 SheetTemplate template = null;
@@ -92,9 +91,14 @@ namespace wiseguy.Controllers
                     return Problem("Unknown mail list");
 
                 SheetIssue issue = SheetIssue.Issue(maillist, template);
-                context.Issues.Add(issue);
-                await context.SaveChangesAsync();
-                return Ok("OK");
+                if (issue != null) 
+                {
+                    context.Issues.Add(issue);
+                    await context.SaveChangesAsync();
+                    return Ok(IssuedCopiesDTO.Construct(issue));
+                }
+                
+                return Ok(null);
             }
         }
 

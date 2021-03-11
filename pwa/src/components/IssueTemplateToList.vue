@@ -1,6 +1,5 @@
 <template>
 <div>
-    {{lists}}
   <select v-model="maillistId"><option value="">Choose list</option><option v-for="list in lists"
     :key="list.id" :value="list.id">{{list.name}}</option></select>
     <button @click="issue">Issue</button>
@@ -30,12 +29,15 @@ export default {
             var data = new FormData();
             data.append("templateId", this.templateId);
             data.append("maillistId", this.maillistId)
+            var self = this;
             this.$root
                 .post("tpl/"+this.templateId+"/issue",data)
                 .then(response => {
-                    if (response.data != "OK") {
+                    if (response.data == "NULL") {
                         console.error("Error occured while trying to issue template");
                     }
+                    self.$emit("onIssued", response.data);
+                    
                 });
         }
     }

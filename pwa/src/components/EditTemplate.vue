@@ -6,7 +6,6 @@
       Subject <input type="text" id="txtSubject" name="subject" :value="subject" @change="update" /><br>
       <label>Terms</label><br>
       <textarea :value="phraseText" v-on:change="update" id="txtPhrases" ></textarea>
-      
   </div>
 </template>
 

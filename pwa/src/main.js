@@ -4,6 +4,7 @@ import TemplateManager from './pages/TemplateManager.vue'
 import ListManager from './pages/ListManager.vue'
 import NotFound from './pages/NotFound.vue'
 import wb from "./registerServiceWorker";
+import IssuePage from "./pages/IssuePage.vue";
 Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
 
@@ -12,17 +13,20 @@ const LandingPage = EvaluationForm;
 
 const routes = {
   '^/$' : LandingPage,
-  '^/eval/[a-z]+/$' : EvaluationForm,
+  '^/eval/[a-zA-Z0-9]+/$' : EvaluationForm,
   '^/tpl/$' : TemplateManager,
   '^/tpl/[0-9]+/$' : TemplateManager,
   '^/list/$' : ListManager,
-  '^/list/[0-9]+/$' : ListManager
+  '^/list/[0-9]+/$' : ListManager,
+  '^/issue/[0-9]+/$' : IssuePage,
+
 }
 const server = 'https://localhost:5001/';
 const axios = require("axios");
 const app = new Vue({
   data : {
-    currentRoute : ""
+    currentRoute : "",
+    pageData : null
   },
   methods : {
     server(request) {
@@ -35,6 +39,10 @@ const app = new Vue({
     get(path) {
       return axios.get(server+path)
     },
+    go(path, data) {
+      document.location.hash = "#"+path;
+      this.pageData = data;
+    },
     folder(idx) {
       idx = parseInt(idx);
       var folders = this.currentRoute.split("/");
@@ -44,7 +52,6 @@ const app = new Vue({
     }
   },
   computed : {
-    
     ViewComponent() {
       for (var k in routes) {
         var regex = new RegExp(k);

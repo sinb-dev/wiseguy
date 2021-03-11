@@ -18,7 +18,6 @@
 <script>
 import EvaluationPhrase from '../components/EvaluationPhrase.vue';
 import URL from '../scripts/url.js';
-const axios = require("axios");
 
 export default {
     components : {
@@ -54,9 +53,8 @@ export default {
         }
     },
     mounted() {
-        var self = this;
-        axios
-            .get('https://monster.hoxer.net:5001/tpl/phrases/1')
+        var token = this.$root.folder(2);
+        this.$root.get("eval/"+token)
             .then(reponse => self.load(reponse.data))
     }
 }

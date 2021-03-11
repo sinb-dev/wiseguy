@@ -9,7 +9,10 @@
         <button @click="update">Save template</button>
         <button @click="issue" title="Create copies and send to students for filling">Issue copies to list</button>
 
-        <issue-modal v-if="show_issue_modal" v-bind:lists="maillists" v-bind:templateId="templateId"></issue-modal>
+        <issue-modal    v-if="show_issue_modal" 
+                        v-bind:lists="maillists" 
+                        v-bind:templateId="templateId"
+                        @issued="templateIssued"></issue-modal>
     </div>
 </template>
 
@@ -55,6 +58,10 @@ export default {
         },
         issue : function() {
             this.show_issue_modal = true;
+        },
+        templateIssued : function(data) {
+            //User issued this template, take him to the list of copies
+            this.$root.go("issue/"+data.issueId, data);
         }
     },
     computed : {
