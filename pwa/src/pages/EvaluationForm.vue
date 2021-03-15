@@ -55,7 +55,7 @@ export default {
     mounted() {
         var token = this.$root.folder(2);
         this.$root.get("eval/"+token)
-            .then(reponse => self.load(reponse.data))
+            .then(reponse => this.load(reponse.data))
     }
 }
 </script>

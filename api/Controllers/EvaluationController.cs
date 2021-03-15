@@ -37,6 +37,8 @@ namespace wiseguy.Controllers
                 form.subject = copy.Subject;
 
                 foreach (var p in copy.SheetTemplate.Phrases) {
+                    var tmp = p;
+                    tmp.SheetTemplate=null;
                     form.phrases.Add(p);
                 }
                 return Ok(form);
