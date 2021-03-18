@@ -39,11 +39,21 @@ export default {
             }
         },
         submit() {
+            var phrases = new Array();
+            for (var i in this.phrases) {
+                phrases[i] = {
+                    id : this.phrases[i].id,
+                    answer : this.phrases[i].answer,
+                    text : this.phrases[i].text
+                }
+            }
+
             var packet = {
                 sender : URL.workingDirectory(),
-                answer : this.phrases,
+                answers : phrases,
             }
-            console.log(packet);
+            var token = this.$root.folder(2);
+            this.$root.post("eval/"+token, packet);
         },
         load(data) {
             console.log(data);

@@ -44,5 +44,26 @@ namespace wiseguy.Controllers
                 return Ok(form);
             }
         }
+
+        [HttpPost("{copyToken}")]
+        public async Task<ActionResult<SheetCopy>> Get(string copyToken, EvaluationAnswerDTO evaluation)
+        {
+            using (var context = new WiseGuyContext()) 
+            {
+                var copy = context.Copies
+                    .Include(c=>c.SheetTemplate)
+                    .Include(c=>c.SheetTemplate.Phrases)
+                    .First(c => c.Token == copyToken);
+                
+                foreach (var a in evaluation.GetAnswers()) 
+                {
+                    a.Sheet = copy;
+                    context.Answers.Add(a);
+                }
+                await context.SaveChangesAsync();
+
+                return Ok("OK");
+            }
+        }
     }
 }
