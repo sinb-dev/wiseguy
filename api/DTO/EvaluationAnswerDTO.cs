@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 namespace wiseguy {
     public class EvaluationAnswerDTO 
     {
@@ -15,14 +16,26 @@ namespace wiseguy {
         {
             var answers = new List<Answer>();
 
-            foreach (var a in this.answers) {
-                answers.Add(new Answer {
-                    AnswerId = a.id,
-                    Sheet = null,
-                    Phrase = a.text,
-                    AnswerType = a.answer
-                });
+            var ids = this.answers.Select( a => a.id).ToList();
+
+            
+            using (var context = new WiseGuyContext()) {
+                var phrases = context.Phrases.Where(p => ids.Contains(p.Id)).ToDictionary(p => p.Id);
+
+                foreach (var a in this.answers) {
+                    if (!phrases.ContainsKey(a.id)) continue;
+                    
+                    var ans = new Answer {
+                        AnswerId = a.id,
+                        Sheet = null,
+                        AnswerType = a.answer
+                    };
+                    answers.Add(ans);
+                }
             }
+
+
+            
 
             return answers;
         }

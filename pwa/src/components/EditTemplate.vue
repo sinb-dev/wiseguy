@@ -1,12 +1,24 @@
 <template>
-  <div>
-      <h1 v-if="course==''">New template</h1>
-      <h1 v-else>Edit {{course}} > {{subject}}</h1>
-            Course <input type="text" id="txtCourse" name="course" :value="course" @change="update" /><br>
-      Subject <input type="text" id="txtSubject" name="subject" :value="subject" @change="update" /><br>
-      <label>Terms</label><br>
-      <textarea :value="phraseText" v-on:change="update" id="txtPhrases" ></textarea>
-  </div>
+    <div>
+        <h1 v-if="course==''" class="ui dividing header">New template</h1>
+        <h1 v-else class="ui dividing header">Edit {{course}} > {{subject}}</h1>
+
+        <div class="ui form">
+            <div class="field">
+                <label>Course</label>
+                <input type="text" id="txtCourse" name="course" :value="course" @change="update"/>
+            </div>
+            <div class="field">
+                <label>Subject</label>
+                <input type="text" id="txtSubject" name="subject" :value="subject" @change="update" />
+            </div>
+            <div class="ui ignored positive message">Phrases are seperated by each line</div>
+            <div class="field">
+                <label>Terms</label>
+                <textarea :value="phraseText" v-on:change="update" id="txtPhrases" ></textarea>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>

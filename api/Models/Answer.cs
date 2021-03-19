@@ -8,7 +8,7 @@ namespace wiseguy {
         [Key]
         public int AnswerId {get;set;}
         public SheetCopy Sheet {get;set;}
-        public string Phrase {get;set;}
+        public Phrase Phrase {get;set;}
         public AnswerType AnswerType {get;set;}
     }
 }

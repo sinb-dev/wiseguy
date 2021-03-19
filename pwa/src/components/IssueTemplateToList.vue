@@ -1,12 +1,17 @@
 <template>
 <div>
-  <select v-model="maillistId"><option value="">Choose list</option><option v-for="list in lists"
-    :key="list.id" :value="list.id">{{list.name}}</option></select>
-    <button @click="issue">Issue</button>
+    <div class="ui basic modal">
+        <select v-model="maillistId"><option value="">Choose list</option><option v-for="list in lists"
+            :key="list.id" :value="list.id">{{list.name}}</option></select>
+        <button @click="issue">Issue</button>
+    </div>
 </div>
 </template>
 
 <script>
+import $ from "jquery";
+
+import '../../public/assets/semantic.js';
 export default {
     props : {
         lists : Array,
@@ -20,7 +25,6 @@ export default {
     methods : {
         issue() {
             var mid = parseInt(this.maillistId);
-            
             var tid = parseInt(this.templateId);
             
             if (isNaN(mid) || mid == 0) return console.error("Cannot issue template to list. The mail list id is not a valid number");
@@ -39,7 +43,11 @@ export default {
                     self.$emit("onIssued", response.data);
                     
                 });
-        }
+        },
+        
+    },
+    mounted() {
+        $(".ui.basic.modal").modal('show')
     }
 }
 </script>

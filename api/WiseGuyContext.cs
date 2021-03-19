@@ -14,7 +14,7 @@ namespace wiseguy {
         public DbSet<Phrase> Phrases {get;set;}
         public DbSet<Maillist> Maillists {get;set;}
         public DbSet<Participant> Participants {get;set;}
-
+        public DbSet<User> Users {get;set;}
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlServer(Startup.CurrentConfiguration.GetConnectionString("localDatabase"));
@@ -41,6 +41,7 @@ namespace wiseguy {
                 .HasOne(a=>a.Sheet)
                 .WithMany(s=>s.Answers)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
             base.OnModelCreating(modelBuilder);
         }

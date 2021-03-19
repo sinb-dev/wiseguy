@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import StartPage from "./pages/StartPage.vue";
 import EvaluationForm from './pages/EvaluationForm.vue'
 import TemplateManager from './pages/TemplateManager.vue'
 import ListManager from './pages/ListManager.vue'
@@ -9,7 +10,7 @@ Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
 
 
-const LandingPage = EvaluationForm;
+const LandingPage = StartPage;
 
 const routes = {
   '^/$' : LandingPage,

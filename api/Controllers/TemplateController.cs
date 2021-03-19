@@ -24,7 +24,10 @@ namespace wiseguy.Controllers
                 if (o != null) {
                     context.Templates.Add( o );
                     await context.SaveChangesAsync();
-                    return Ok("OK");
+                    var response = new Dictionary<string,int> {
+                        {"id", o.Id}
+                    };
+                    return Ok(response);
                 }
             }
             return Problem("Incorrect template data");  

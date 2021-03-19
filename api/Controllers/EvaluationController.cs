@@ -27,10 +27,16 @@ namespace wiseguy.Controllers
         {
             using (var context = new WiseGuyContext()) 
             {
-                var copy = context.Copies
-                    .Include(c=>c.SheetTemplate)
-                    .Include(c=>c.SheetTemplate.Phrases)
-                    .First(c => c.Token == copyToken);
+                SheetCopy copy = null;
+                try {
+                    copy = context.Copies
+                        .Include(c=>c.SheetTemplate)
+                        .Include(c=>c.SheetTemplate.Phrases)
+                        .First(c => c.Token == copyToken);
+                } catch {}
+
+                if (copy == null)
+                    return Problem("No such copy");
 
                 var form = new form();
                 form.course = copy.Course;
@@ -54,12 +60,28 @@ namespace wiseguy.Controllers
                     .Include(c=>c.SheetTemplate)
                     .Include(c=>c.SheetTemplate.Phrases)
                     .First(c => c.Token == copyToken);
+
+                if (copy.Completed != DateTime.MinValue) {
+                    return Problem("This copy has already been completed");
+                }
                 
-                foreach (var a in evaluation.GetAnswers()) 
+                var phraseIds = evaluation.answers.Select(a => a.id).ToList();
+                var phrases = context.Phrases
+                    .Where(p => phraseIds.Contains(p.Id))
+                    .ToDictionary(p => p.Id);
+
+                foreach (var answerDTO in evaluation.answers) 
                 {
-                    a.Sheet = copy;
+                    var a = new Answer {
+                        AnswerId = 0,
+                        Sheet = copy,
+                        AnswerType = answerDTO.answer,
+                        Phrase = phrases[answerDTO.id]
+                    };
+
                     context.Answers.Add(a);
                 }
+                copy.Completed = DateTime.Now;
                 await context.SaveChangesAsync();
 
                 return Ok("OK");

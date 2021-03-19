@@ -5,9 +5,14 @@
             v-bind:course="template.course"
             v-bind:subject="template.subject"
             v-bind:phraseText="phraseText"
-            v-on:update="load"></edit-template>
-        <button @click="update">Save template</button>
-        <button @click="issue" title="Create copies and send to students for filling">Issue copies to list</button>
+            v-on:update="load"></edit-template><br>
+        <div class="ui container">
+            <button class="ui primary button" @click="update"><i class="ui save icon"></i>Save template</button>
+            <button class="ui button" @click="issue" title="Create copies and send to students for filling"
+                v-if="templateId != 0" >
+                <i class="ui inbox icon"></i>Issue copies to list
+            </button>
+        </div>
 
         <issue-modal    v-if="show_issue_modal" 
                         v-bind:lists="maillists" 
@@ -54,9 +59,10 @@ export default {
             var op = this.templateId > 0 ? "tpl/update" : "tpl/new";
             this.$root
                 .post( op, data)
-                .then(d => console.log(d));
+                .then(d => this.templateId == 0 ? this.templateId = d.data.id : 0);
         },
         issue : function() {
+            
             this.show_issue_modal = true;
         },
         templateIssued : function(data) {
