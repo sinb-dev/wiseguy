@@ -1,23 +1,25 @@
 <template>
     <div>
+        <md-content>
         <h1 v-if="course==''" class="ui dividing header">New template</h1>
         <h1 v-else class="ui dividing header">Edit {{course}} > {{subject}}</h1>
 
         <div class="ui form">
-            <div class="field">
+            <md-field>
                 <label>Course</label>
-                <input type="text" id="txtCourse" name="course" :value="course" @change="update"/>
-            </div>
-            <div class="field">
+                <md-input type="text" id="txtCourse" name="course" :value="course" @change="update"/>
+            </md-field>
+            <md-field>
                 <label>Subject</label>
-                <input type="text" id="txtSubject" name="subject" :value="subject" @change="update" />
-            </div>
+                <md-input type="text" id="txtSubject" name="subject" :value="subject" @change="update" />
+            </md-field>
             <div class="ui ignored positive message">Phrases are seperated by each line</div>
-            <div class="field">
+            <md-field>
                 <label>Terms</label>
-                <textarea :value="phraseText" v-on:change="update" id="txtPhrases" ></textarea>
-            </div>
+                <md-textarea :value="phraseText" v-on:change="update" id="txtPhrases" md-autogrow ></md-textarea>
+            </md-field>
         </div>
+        </md-content>
     </div>
 </template>
 

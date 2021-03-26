@@ -9,9 +9,6 @@
 </template>
 
 <script>
-import $ from "jquery";
-
-import '../../public/assets/semantic.js';
 export default {
     props : {
         lists : Array,
@@ -47,7 +44,7 @@ export default {
         
     },
     mounted() {
-        $(".ui.basic.modal").modal('show')
+        
     }
 }
 </script>
