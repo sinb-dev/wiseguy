@@ -5,9 +5,10 @@ namespace wiseguy {
         public string name {get;set;}
         public IList<string> emails {get;set;}
         public Maillist GetMaillist() {
-            return new Maillist {
-                //name = Name
-            };
+            var list = new Maillist();
+            list.Name = name;
+            
+            return list;
         }
         public MaillistNewDTO Construct(Maillist o) {
             var dto = new MaillistNewDTO();

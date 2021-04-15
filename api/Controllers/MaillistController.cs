@@ -27,7 +27,10 @@ namespace wiseguy.Controllers
                     context.Maillists.Add( list );
                     await context.SaveChangesAsync();
                     await this.AddParticipants(list.Id, listdata.emails);
-                    return Ok("OK");
+                    var response = new Dictionary<string,int> {
+                        {"id", list.Id}
+                    };
+                    return Ok(response);
                 }
             }
             return Problem("Invalid request data");

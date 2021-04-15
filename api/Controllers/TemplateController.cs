@@ -33,7 +33,7 @@ namespace wiseguy.Controllers
             return Problem("Incorrect template data");  
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<ActionResult<String>> UpdateSheetTemplate([FromForm] SheetTemplateUpdateFormData data)
         {
             using(var context = new WiseGuyContext()) {

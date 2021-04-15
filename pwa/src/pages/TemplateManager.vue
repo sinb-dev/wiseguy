@@ -21,10 +21,7 @@
                         v-bind:lists="maillists" 
                         v-bind:templateId="templateId"
                         @issued="templateIssued"></issue-modal>
-
-  
             </md-dialog>
-
     <!--<md-button class="md-primary md-raised" @click="showDialog = true">Show Dialog</md-button>-->
             
         </div>
@@ -34,7 +31,7 @@
 <script>
 import EditTemplate from '../components/EditTemplate.vue';
 import IssueTemplateToMaillist from '../components/IssueTemplateToList.vue';
-
+//import PouchDB from 'pouchdb';
 export default {
   components: { 
         'edit-template' : EditTemplate,
@@ -67,10 +64,16 @@ export default {
                 p => data.append("Phrases", p)
             )
 
+
             var op = this.templateId > 0 ? "tpl/update" : "tpl/new";
-            this.$root
-                .post( op, data)
-                .then(d => this.templateId == 0 ? this.templateId = d.data.id : 0);
+            
+            var self = this;
+            var method = this.templateId > 0 ? this.$root.put : this.$root.post;
+            method( op, data)
+                .then(d => {
+                    self.templateId == 0 ? self.templateId = d.data.id : 0;
+                    self.$root.onTemplateUpdate({ "id": self.templateId, "course": self.template.course, "subject": self.template.subject} );
+                });
         },
         issue : function() {
             this.show_issue_modal = true;
@@ -94,6 +97,9 @@ export default {
            this.$root
             .get('tpl/'+this.templateId)
             .then(reponse => this.load(reponse.data))
+            .catch(function(err) {
+                console.error(err);
+            });
 
             this.$root.get("list/lists").then( response => this.maillists = response.data);
         }

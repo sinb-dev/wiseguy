@@ -7,6 +7,7 @@ namespace wiseguy
         [Key]
         public string Email {get;set;}
         public string Name {get;set;}
+        public string AccessToken {get;set;}
         public IList<Maillist> Maillists {get;set;} = new List<Maillist>();
 
         public static List<Participant> GetParticipantsFromEmails(List<string> emails) 

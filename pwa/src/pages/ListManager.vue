@@ -4,12 +4,13 @@
             v-on:update="load"
             :name="list.name"
             :emailText="emailsText"></edit-list>
-        <button @click="update">Save template</button>
+        <a href="#/">back</a><button @click="update">Save template</button>
     </div>
 </template>
 
 <script>
 import EditMaillist from '../components/EditMaillist.vue';
+//import PouchDB from 'pouchdb';
 export default {
   components: { 'edit-list' : EditMaillist },
     
@@ -31,16 +32,20 @@ export default {
             var data = new FormData();
             data.append("Id", this.listId);
             data.append("Name", this.list.name);
+            console.log(data);
             
             this.list.emails.forEach(
                 p => data.append("Emails", p)
             )
             
+            var self = this;
             var op = this.listId > 0 ? "list/update" : "list/new";
-            
-            this.$root
-                .post( op, data)
-                .then(d => console.log(d));
+            var method = this.listId > 0 ? this.$root.put : this.$root.post;
+            method( op, data)
+                .then(d => {
+                    self.listId == 0 ? self.listId = d.data.id : 0;
+                    self.$root.onMaillistUpdate({ "id": self.listId, "name": self.list.name} );
+                });
         }
     },
     computed : {

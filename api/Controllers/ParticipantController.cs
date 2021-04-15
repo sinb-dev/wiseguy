@@ -74,6 +74,7 @@ namespace wiseguy.Controllers
                 foreach (string email in nonexisting) {
                     Participant p = new Participant {
                         Email = email,
+                        AccessToken = WiseGuyUtils.CreateToken(),
                         Name = email.IndexOf("@") >= 0? email.Substring(0, email.IndexOf("@")) : email,
                     };
                     context.Participants.Add(p);

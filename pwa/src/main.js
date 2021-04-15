@@ -18,6 +18,8 @@ Vue.use(VueMaterial)*/
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
+import PouchDB from 'pouchdb';
+
 import { MdDialog, MdButton, MdField, MdContent } from 'vue-material/dist/components'
 Vue.use(MdDialog);
 Vue.use(MdButton);
@@ -40,12 +42,12 @@ const routes = {
 }
 const server = 'https://localhost:5001/';
 const axios = require("axios");
-
+const DB = new PouchDB("wiseguy");
 const app = new Vue({
   data : {
     currentRoute : "",
     pageData : null,
-    
+    recent : {_id : "recent", _rev : "", templates:[], lists: []}
   },
   methods : {
     server(request) {
@@ -54,6 +56,10 @@ const app = new Vue({
     post(path,data) {
       
       return axios.post(server+path, data)
+    },
+    put(path,data) {
+      
+      return axios.put(server+path, data)
     },
     get(path) {
       return axios.get(server+path)
@@ -68,6 +74,45 @@ const app = new Vue({
       if (typeof(folders[idx]) != "undefined") {
         return folders[idx];
       }
+    },
+    onMaillistUpdate(maillist) {
+      for (var i in this.recent.lists) {
+        if (this.recent.lists[i].id == maillist.id) {
+          this.recent.lists.splice(i,1);
+        }
+      }
+      
+      this.recent.lists.splice(0,0,maillist);
+      if (this.recent.lists.length > 5)
+        this.recent.lists = this.recent.lists.slice(0,5);
+
+      var self = this;
+      DB.put(this.recent).then(function() {
+        DB.get("recent").then(function(recent) {
+          self.recent = recent;
+          self.recent._rev = recent._rev;
+          console.log("New revision: "+self.recent._rev)
+        })
+      });
+    },
+    onTemplateUpdate(template) {
+      for (var i in this.recent.templates) {
+        if (this.recent.templates[i].id == template.id) {
+          this.recent.templates.splice(i,1);
+        }
+      }
+
+      this.recent.templates.splice(0,0,template);
+      
+      if (this.recent.templates.length > 5)
+        this.recent.templates = this.recent.templates.slice(0,5);
+      var self = this;
+      DB.put(this.recent).then(function() {
+        DB.get("recent").then(function(recent) {
+          self.recent = recent;
+          self.recent._rev = recent._rev;
+        })
+      })
     }
   },
   computed : {
@@ -94,6 +139,16 @@ const app = new Vue({
         this.showUpdateUI = true;
       });
     }
+    var self = this;
+    var db = new PouchDB("wiseguy");
+    db.get("recent").then(function(recent) {
+      self.recent = recent;
+      console.log(recent);
+    }).catch(function(err) {
+      if (err.status != 404) 
+        console.log(err)
+    });
+
   }
 }).$mount('#app')
 window.onhashchange = function() {
