@@ -7,6 +7,7 @@
             v-bind:phraseText="phraseText"
             v-on:update="load"></edit-template><br>
         <md-content>
+            <md-button class="md-secondary" href="#/">Back</md-button>
             <md-button class="md-primary" @click="update">Save template</md-button>
             <md-button @click="issue" title="Create copies and send to students for filling"
                 v-if="templateId != 0" >
@@ -83,7 +84,8 @@ export default {
         },
         templateIssued : function(data) {
             //User issued this template, take him to the list of copies
-            this.$root.go("issue/"+data.issueId, data);
+            this.$root.go("/issue/"+data.issueId, data);
+            this.$root.onTemplateIssued(this.templateId,data);
         }
     },
     computed : {

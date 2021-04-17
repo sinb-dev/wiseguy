@@ -14,6 +14,11 @@
         <li v-for="r in $root.recent.lists"
             v-bind:key="r.id"><a v-bind:href="lsturl(r.id)">{{r.name}}</a></li>
       </ol>
+      <div>Recent Issues</div>
+      <ol>
+        <li v-for="r in $root.localIssues.issues"
+            v-bind:key="r.issueId"><a v-bind:href="issurl(r.issueId)">{{r.issueId}}</a></li>
+      </ol>
   </div>
 </template>
 
@@ -25,6 +30,9 @@ export default {
     },
     lsturl(id) {
       return "#/list/"+id;
+    },
+    issurl(id) {
+      return "#/issue/"+id;
     }
   }
 }

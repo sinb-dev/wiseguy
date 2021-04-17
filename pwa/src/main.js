@@ -20,11 +20,12 @@ import 'vue-material/dist/theme/default.css'
 
 import PouchDB from 'pouchdb';
 
-import { MdDialog, MdButton, MdField, MdContent } from 'vue-material/dist/components'
+import { MdDialog, MdButton, MdField, MdContent, MdSnackbar } from 'vue-material/dist/components'
 Vue.use(MdDialog);
 Vue.use(MdButton);
 Vue.use(MdField);
 Vue.use(MdContent);
+Vue.use(MdSnackbar);
 
 Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
@@ -47,7 +48,8 @@ const app = new Vue({
   data : {
     currentRoute : "",
     pageData : null,
-    recent : {_id : "recent", _rev : "", templates:[], lists: []}
+    recent : {_id : "recent", _rev : "", templates:[], lists: []},
+    localIssues : {_id : "localIssues", _rev : "", issues : []},
   },
   methods : {
     server(request) {
@@ -88,11 +90,7 @@ const app = new Vue({
 
       var self = this;
       DB.put(this.recent).then(function() {
-        DB.get("recent").then(function(recent) {
-          self.recent = recent;
-          self.recent._rev = recent._rev;
-          console.log("New revision: "+self.recent._rev)
-        })
+        self.loadRecent();
       });
     },
     onTemplateUpdate(template) {
@@ -108,11 +106,38 @@ const app = new Vue({
         this.recent.templates = this.recent.templates.slice(0,5);
       var self = this;
       DB.put(this.recent).then(function() {
-        DB.get("recent").then(function(recent) {
-          self.recent = recent;
-          self.recent._rev = recent._rev;
-        })
+        self.loadRecent();
       })
+    },
+    loadRecent() {
+      var self = this;
+      DB.get("recent").then(function(recent) {
+        self.recent = recent;
+        self.recent._rev = recent._rev;
+      }).catch(function(err) {
+        if (err.status != 404) 
+          console.log(err)
+      });
+    },
+    onTemplateIssued(templateId, data) {
+      var self = this;
+      self.localIssues.issues.push(data);
+      DB.put(self.localIssues).then(() => {
+        self.loadLocalIssues();
+      })
+    },
+    loadLocalIssues() {
+      var self = this;
+      DB.get("localIssues").then(issues => {
+        
+        if (issues) {
+          self.localIssues = issues;
+          self.localIssues._rev = issues._rev;
+
+        } else
+          self.localIssues = [];
+  
+      });
     }
   },
   computed : {
@@ -139,16 +164,10 @@ const app = new Vue({
         this.showUpdateUI = true;
       });
     }
-    var self = this;
-    var db = new PouchDB("wiseguy");
-    db.get("recent").then(function(recent) {
-      self.recent = recent;
-      console.log(recent);
-    }).catch(function(err) {
-      if (err.status != 404) 
-        console.log(err)
-    });
-
+    //var self = this;
+    //var db = new PouchDB("wiseguy");
+    this.loadRecent();
+    this.loadLocalIssues();
   }
 }).$mount('#app')
 window.onhashchange = function() {

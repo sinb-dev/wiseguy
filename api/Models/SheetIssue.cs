@@ -1,22 +1,34 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 namespace wiseguy {
     public class SheetIssue 
     {
         [Key]
         public int Id {get;set;}
         public SheetTemplate SheetTemplate { get; set; }
+        public int TemplateIssueNumber {get;set;}
         public List<SheetCopy> Copies { get; set; }
         public DateTime Issued {get;set;}
         public Maillist Maillist {get;set;}
         
         public static SheetIssue Issue(Maillist list, SheetTemplate template) 
         {
+            int getNextIssueNumber(SheetIssue issue) {
+                using (var context = new WiseGuyContext()) {
+                    return context.Issues
+                        .Include(i=>i.SheetTemplate)
+                        .Select(i => i.SheetTemplate.Equals(issue.SheetTemplate) && i.Id != issue.Id)
+                        .ToArray().Length + 1;
+                }
+            }
             using (var context = new WiseGuyContext()) {
                 var issue = new SheetIssue();
                 issue.SheetTemplate = template;
+                issue.TemplateIssueNumber = getNextIssueNumber(issue);
                 issue.Issued = DateTime.Now;
                 issue.Maillist = list;
                 issue.Copies = issue.createCopies(list.Participants, template);

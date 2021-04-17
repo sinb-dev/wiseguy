@@ -15,8 +15,16 @@ namespace wiseguy.Controllers
         class form {
             public string course {get;set;}
             public string subject {get;set;}
+            public DateTime completed {get;set;}
             public List<Phrase> phrases {get;set;} = new List<Phrase>();
+            public Dictionary<string,List<formAnswer>> answers {get;set;} = new Dictionary<string,List<formAnswer>>();
         }
+        class formAnswer {
+            public AnswerType answer {get;set;}
+            public int issueId {get;set;}
+            public DateTime completed {get;set;}
+        }
+    
 
         public EvaluationController(ILogger<EvaluationController> logger)
         {
@@ -31,7 +39,9 @@ namespace wiseguy.Controllers
                 try {
                     copy = context.Copies
                         .Include(c=>c.SheetTemplate)
+                        .Include(c=>c.Issue)
                         .Include(c=>c.SheetTemplate.Phrases)
+                        .Include(c=>c.Answers)
                         .First(c => c.Token == copyToken);
                 } catch {}
 
@@ -41,12 +51,39 @@ namespace wiseguy.Controllers
                 var form = new form();
                 form.course = copy.Course;
                 form.subject = copy.Subject;
+                form.completed = copy.Completed;
 
                 foreach (var p in copy.SheetTemplate.Phrases) {
                     var tmp = p;
                     tmp.SheetTemplate=null;
                     form.phrases.Add(p);
                 }
+
+                foreach (var p in copy.Answers) {
+                   // form.answers.Add(p.Phrase.Id.ToString(), new formAnswer() { answer = p.AnswerType, issueId = copy.Issue.Id, completed = copy.Completed});
+                }
+
+                try {
+                    var alltimeAnswersForTemplate = context.Answers
+                        .Include(c=>c.Sheet)
+                        .Include(c=>c.Phrase)
+                        .Include(c=>c.Sheet.SheetTemplate)
+                        .Where(c => c.Sheet.Email == copy.Email && c.Sheet.SheetTemplate.Equals(copy.SheetTemplate))
+                        .ToList();
+                    foreach (var a in alltimeAnswersForTemplate) {
+                        string pid = a.Phrase.Id.ToString();
+                        var answer = new formAnswer() { answer = a.AnswerType, issueId = copy.Issue.Id, completed = a.Sheet.Completed};
+                        if (!form.answers.ContainsKey(pid))
+                        {
+                            form.answers[pid] = new List<formAnswer>();
+                        }
+
+                        form.answers[pid].Add(answer);
+                    }   
+                } catch {
+
+                }
+
                 return Ok(form);
             }
         }

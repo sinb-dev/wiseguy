@@ -1,9 +1,21 @@
 <template>
   <tr>
     <td>{{phrase}}</td>
-    <td><input type="button" :id="field1" @click="cross" ></td>
-    <td><input type="button" :id="field2" @click="cross" ></td>
-    <td><input type="button" :id="field3" @click="cross" ></td>
+    <td v-if="edit"><input type="button" :id="field1" @click="cross" ></td>
+    <td v-if="edit"><input type="button" :id="field2" @click="cross"></td>
+    <td v-if="edit"><input type="button" :id="field3" @click="cross"></td>
+    <td v-if="!edit" class="answer">
+      <b v-for="a in answers['1']"
+      :key="a.id">{{a}}</b>
+    </td>
+    <td v-if="!edit" class="answer">
+      <b v-for="a in answers['2']"
+      :key="a.id">{{a}}</b>
+    </td>
+    <td v-if="!edit" class="answer">
+      <b v-for="a in answers['3']"
+      :key="a.id">{{a}}</b>
+    </td>
   </tr>
 </template>
 
@@ -11,7 +23,9 @@
 export default {
     props : {
         phrase : String,
-        id : Number
+        id : Number,
+        edit : Boolean,
+        answers : Number
     },
     computed : {
       field1() {return "evaluationfield-"+this.id+"-1";},
@@ -43,5 +57,11 @@ export default {
   input {
     width:100%;
     height:32px;
+  }
+  div.answer {
+    text-align:center;
+  }
+  td.answer {
+    text-align:center;
   }
 </style>

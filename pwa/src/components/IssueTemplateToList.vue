@@ -37,7 +37,7 @@ export default {
                     if (response.data == "NULL") {
                         console.error("Error occured while trying to issue template");
                     }
-                    self.$emit("onIssued", response.data);
+                    self.$emit("issued", response.data);
                     
                 });
         },

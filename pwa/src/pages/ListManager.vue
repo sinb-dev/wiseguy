@@ -4,7 +4,9 @@
             v-on:update="load"
             :name="list.name"
             :emailText="emailsText"></edit-list>
-        <a href="#/">back</a><button @click="update">Save template</button>
+
+        <md-button class="md-secondary" href="#/">Back</md-button>
+        <md-button @click="update">Save template</md-button>
     </div>
 </template>
 

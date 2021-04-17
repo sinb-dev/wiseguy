@@ -22,7 +22,12 @@ namespace wiseguy.Controllers
             using(var context = new WiseGuyContext()) {
                 SheetIssue issue = null;
                 try {
-                    issue = context.Issues.Include(i=>i.Maillist).Include(i=>i.Maillist.Participants).First(i => i.Id == issueId);
+                    issue = context.Issues
+                        .Include(i=>i.Maillist)
+                        .Include(i=>i.Maillist.Participants)
+                        .Include(t=>t.SheetTemplate)
+                        .First(i => i.Id == issueId);
+                    
                 } catch {}
 
                 if (issue == null)
