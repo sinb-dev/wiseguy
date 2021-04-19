@@ -2,7 +2,7 @@
 # sudo docker run --rm -d --name pwaptest -v "$(pwd)"/certs:/certs -e TLS_KEY=/certs/domain.key -e TLS_CRT=/certs/domain.crt -p 8080:8080 localhost:443/pwaptest
 FROM pwa
 WORKDIR /app
-VOLUME /certs
+
 RUN npm run build
 RUN npm install -g http-server
 
