@@ -1,9 +1,11 @@
 version: "3"
+volumes:
+  cert-volume:
 services:
   web:
     build: pwa-production/.
     volumes:
-      - certs:/etc/docker/certs/
+      - cert-volume:/etc/docker/certs/
     ports:
       - "8001:8080"
     environment:
@@ -17,7 +19,7 @@ services:
       - "8000:5000"
       - "8002:5001"
     volumes:
-      - certs:/etc/docker/certs/
+      - cert-volume:/etc/docker/certs/
     environment:
       ASPNETCORE_URLS: "https://+:443"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/certs/docker.data.techcollege.dk.pfx"
