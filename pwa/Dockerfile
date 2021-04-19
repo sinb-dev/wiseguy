@@ -3,10 +3,6 @@ FROM node:lts-alpine
 # make the 'app' folder the current working directory
 WORKDIR /app
 
-VOLUME /certs/ # Mount the certificate folder as a docker volume
-
-ENV TLS_KEY="/certs/domain.key"
-ENV TLS_CRT="/certs/domain.crt"
 #Attempt to fix missing babel dependency
 ENV PATH /app/node_modules/.bin:$PATH
 
@@ -34,7 +30,7 @@ RUN npm install -g @vue/cli-service
 
 # CHOOSE EITHER DEVELOPMENT OR PRODUCTION - comment out the other
 # Run development server over https
-#CMD ["vue-cli-service","serve","--https"]
+CMD ["vue-cli-service","serve","--https"]
 
 # Run production server over https
-CMD ["http-server", "dist", "--ssl", ""]
+#CMD ["http-server", "dist", "--ssl", ""]
