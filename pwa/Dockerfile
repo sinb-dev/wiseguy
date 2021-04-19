@@ -33,4 +33,8 @@ RUN npm install -g @vue/cli-service
 CMD ["vue-cli-service","serve","--https"]
 
 # Run production server over https
+
 #CMD ["http-server", "dist", "--ssl", ""]
+
+#RUN npm run build
+#CMD http-server dist --ssl --cert $TLS_CRT --key $TLS_CRT
