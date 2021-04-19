@@ -1,7 +1,7 @@
 version: "3"
 services:
   web:
-    build: pwa/.
+    build: pwa-production/.
     ports:
       - "8001:8080"
     environment:
