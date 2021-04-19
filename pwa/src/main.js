@@ -1,11 +1,10 @@
-console.log("start")
 import Vue from 'vue'
 import StartPage from "./pages/StartPage.vue";
 import EvaluationForm from './pages/EvaluationForm.vue'
 import TemplateManager from './pages/TemplateManager.vue'
 import ListManager from './pages/ListManager.vue'
 import NotFound from './pages/NotFound.vue'
-//import wb from "./registerServiceWorker";
+import wb from "./registerServiceWorker";
 import IssuePage from "./pages/IssuePage.vue";
 
 //Full monty
@@ -27,7 +26,7 @@ Vue.use(MdField);
 Vue.use(MdContent);
 Vue.use(MdSnackbar);
 
-//Vue.prototype.$workbox = wb;
+Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
 
 const LandingPage = StartPage;
