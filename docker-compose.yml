@@ -1,28 +1,27 @@
-version: "3"
-volumes:
-  cert-volume:
+version: "3.4"
 services:
   web:
     build: pwa-production/.
     volumes:
-      - cert-volume:/etc/docker/certs/
+      - /etc/docker/certs:/pwacerts
+        
     ports:
-      - "8001:8080"
+      - "8000:8080"
     environment:
-      TLS_KEY: /certs/docker.data.techcollege.dk.key
-      TLS_CRT: /certs/docker.data.techcollege.dk.crt
+      TLS_KEY: /pwacerts/docker.data.techcollege.dk.key
+      TLS_CRT: /pwacerts/docker.data.techcollege.dk.crt
     depends_on:
       - api
   api:
     build: api/.
     ports:
-      - "8000:5000"
+      - "8001:5000"
       - "8002:5001"
     volumes:
-      - cert-volume:/etc/docker/certs/
+      - /etc/docker/certs:/apicerts
     environment:
       ASPNETCORE_URLS: "https://+:443"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "/certs/docker.data.techcollege.dk.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/apicerts/docker.data.techcollege.dk.pfx"
       ASPNETCORE_Kestrel__Certificates__Default__Password: "signal4-youToo"
     depends_on:
       - db
