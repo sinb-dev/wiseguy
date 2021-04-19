@@ -41,7 +41,7 @@ const routes = {
   '^/issue/[0-9]+/$' : IssuePage,
 
 }
-const server = 'https://localhost:5001/';
+const server = process.env.VUE_APP_WISEGUY_API_HOSTNAME+"/";
 const axios = require("axios");
 const DB = new PouchDB("wiseguy");
 const app = new Vue({
@@ -168,7 +168,10 @@ const app = new Vue({
     //var db = new PouchDB("wiseguy");
     this.loadRecent();
     this.loadLocalIssues();
+    console.info("Remote API server: "+process.env.VUE_APP_WISEGUY_API_HOSTNAME)
+    
   }
+
 }).$mount('#app')
 window.onhashchange = function() {
   app.currentRoute = document.location.hash.substr(1)
