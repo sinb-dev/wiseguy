@@ -9,6 +9,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 # copy both 'package.json' and 'package-lock.json' (if available)
 COPY package.json /app/package.json
 COPY vue.config.js ./vue.config.js
+COPY .env ./.env
+COPY .env.production ./.env.production
 COPY src src
 
 # install project dependencies
