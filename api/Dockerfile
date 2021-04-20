@@ -9,12 +9,15 @@ COPY . .
 
 RUN dotnet build "api.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "api.csproj" -c Release -o /app/publish
+#RUN whereis dotnet-ef
+RUN dotnet ef database update 
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+#FROM build AS publish
+#RUN dotnet publish "api.csproj" -c Release -o /app/publish
+
+#FROM base AS final
+#WORKDIR /app
+#COPY --from=publish /app/publish .
 
 EXPOSE 5000
 EXPOSE 5001
