@@ -28,7 +28,7 @@
 <script>
 import EvaluationPhrase from '../components/EvaluationPhrase.vue';
 import EvaluationResultLegend from '../components/EvaluationResultLegend.vue';
-
+import Access from '../scripts/Access.js';
 import URL from '../scripts/url.js';
 
 export default {
@@ -135,7 +135,12 @@ export default {
                 }
                 phrases.push(p);
             }
-            console.log(phrases);
+            
+            Access.load();
+            if (data.access && this.$root.adminMode == false) {
+                Access.add(data.access);
+            }
+
             this.course = data.course;
             this.subject = data.subject;
             this.phrases = phrases//data.phrases;

@@ -18,6 +18,7 @@ namespace wiseguy.Controllers
             public DateTime completed {get;set;}
             public List<Phrase> phrases {get;set;} = new List<Phrase>();
             public Dictionary<string,List<formAnswer>> answers {get;set;} = new Dictionary<string,List<formAnswer>>();
+            public string access {get;set;}
         }
         class formAnswer {
             public AnswerType answer {get;set;}
@@ -58,11 +59,11 @@ namespace wiseguy.Controllers
                     tmp.SheetTemplate=null;
                     form.phrases.Add(p);
                 }
+                try {
+                    form.access = context.Participants.First(p=>p.Email == copy.Email).AccessToken;
+                } catch {
 
-                foreach (var p in copy.Answers) {
-                   // form.answers.Add(p.Phrase.Id.ToString(), new formAnswer() { answer = p.AnswerType, issueId = copy.Issue.Id, completed = copy.Completed});
                 }
-
                 try {
                     var alltimeAnswersForTemplate = context.Answers
                         .Include(c=>c.Sheet)

@@ -16,7 +16,10 @@ namespace wiseguy {
         public DbSet<Participant> Participants {get;set;}
         public DbSet<User> Users {get;set;}
         public WiseGuyContext() : base() {
+            #if DEBUG
+            #else
             this.Database.Migrate();
+            #endif
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

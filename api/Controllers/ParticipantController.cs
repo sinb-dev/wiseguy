@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace wiseguy.Controllers
 {
@@ -49,6 +50,53 @@ namespace wiseguy.Controllers
             return Problem("Incorrect template data");
         }
 
+        [HttpGet("templates/{token}")]
+        public async Task<ICollection<SheetTemplate>> getTemplatesFromParticipantToken(string token) 
+        {
+            List<SheetTemplate> list = new List<SheetTemplate>();
+            using (var context = new WiseGuyContext()) 
+            {
+                try {
+                    string email = context.Participants.First(p=>p.AccessToken == token).Email;
+
+                    list = context.Copies
+                        .Include(c => c.SheetTemplate)
+                        .Where(c => c.Email == email)
+                        .Select(c => c.SheetTemplate).Distinct().ToList();
+                } catch {
+
+                }
+            }
+            
+            return list; 
+        }
+        [HttpGet("copies/{token}")]
+        public async Task<ParticipantCopyDTO> getCopiesFromParticipantToken(string token) 
+        {
+            ParticipantCopyDTO dto = new ParticipantCopyDTO();
+            
+            using (var context = new WiseGuyContext()) 
+            {
+                try {
+                    Participant p = context.Participants.First(p=>p.AccessToken == token);
+                    dto.name = p.Name;
+                    var copies = context.Copies
+                        .Include(c => c.Issue)
+                        .Include(c => c.SheetTemplate)
+                        .Where(c => c.Email == p.Email)
+                        .OrderByDescending(c => c.Issue.Issued)
+                        .ToList();
+
+                    foreach (var copy in copies) {
+                        dto.Add(copy.SheetTemplate.Subject, copy.SheetTemplate.Course, copy.Issue.Issued, copy.Completed, copy.Token);
+                    }
+                } catch {
+
+                }
+            }
+            
+            return dto; 
+        }
         public static IList<Participant> CreateParticipantsFromEmails(IList<string> emails) 
         {
             IList<Participant> list = new List<Participant>();
@@ -84,5 +132,7 @@ namespace wiseguy.Controllers
             }
             return list;
         }
+
+        
     }
 }

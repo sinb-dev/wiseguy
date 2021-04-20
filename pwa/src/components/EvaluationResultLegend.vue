@@ -1,5 +1,5 @@
 <template>
-<span>
+<span class="legend">
     <h1>{{symbol}}</h1>
     <div>{{date_formatted}}</div>
     <div>{{time_formatted}}</div>
@@ -35,7 +35,7 @@ h1 {
 
     padding:0px;
 }
-span {
+span.legend {
     display:inline-block;
     text-align:center;
     border: 1px #333 solid ;

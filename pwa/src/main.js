@@ -6,6 +6,7 @@ import ListManager from './pages/ListManager.vue'
 import NotFound from './pages/NotFound.vue'
 import wb from "./registerServiceWorker";
 import IssuePage from "./pages/IssuePage.vue";
+import AdminPage from "./pages/Admin.vue";
 
 //Full monty
 /*import VueMaterial from 'vue-material'
@@ -19,12 +20,20 @@ import 'vue-material/dist/theme/default.css'
 
 import PouchDB from 'pouchdb';
 
-import { MdDialog, MdButton, MdField, MdContent, MdSnackbar } from 'vue-material/dist/components'
+import { MdDialog, MdButton, MdField, MdContent, MdSnackbar, MdCard } from 'vue-material/dist/components'
 Vue.use(MdDialog);
 Vue.use(MdButton);
 Vue.use(MdField);
 Vue.use(MdContent);
 Vue.use(MdSnackbar);
+Vue.use(MdCard);
+//Use some interesting new designs
+import VueMaterial from 'vue-material'
+import 'vue-material/dist/vue-material.min.css'
+//import 'vue-material/dist/theme/default-dark.css' // This line here
+
+Vue.use(VueMaterial)
+
 
 Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
@@ -39,6 +48,8 @@ const routes = {
   '^/list/[0-9]+/$' : ListManager,
   '^/issue/[0-9]+/$' : IssuePage,
 
+  '^/admin/$' : AdminPage,
+
 }
 const server = process.env.VUE_APP_WISEGUY_API_HOSTNAME+"/";
 const axios = require("axios");
@@ -49,6 +60,7 @@ const app = new Vue({
     pageData : null,
     recent : {_id : "recent", _rev : "", templates:[], lists: []},
     localIssues : {_id : "localIssues", _rev : "", issues : []},
+    adminMode : false
   },
   methods : {
     server(request) {

@@ -25,7 +25,7 @@ export default {
         phrase : String,
         id : Number,
         edit : Boolean,
-        answers : Number
+        answers : Object
     },
     computed : {
       field1() {return "evaluationfield-"+this.id+"-1";},

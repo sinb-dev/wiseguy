@@ -7,7 +7,7 @@
             v-bind:phraseText="phraseText"
             v-on:update="load"></edit-template><br>
         <md-content>
-            <md-button class="md-secondary" href="#/">Back</md-button>
+            <md-button class="md-secondary" href="#/admin/">Back</md-button>
             <md-button class="md-primary" @click="update">Save template</md-button>
             <md-button @click="issue" title="Create copies and send to students for filling"
                 v-if="templateId != 0" >
