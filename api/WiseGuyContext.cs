@@ -17,6 +17,7 @@ namespace wiseguy {
         public DbSet<User> Users {get;set;}
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            Console.WriteLine($"Connecting to database through: {Startup.CurrentConfiguration.GetConnectionString("localDatabase")}");
             options.UseSqlServer(Startup.CurrentConfiguration.GetConnectionString("localDatabase"));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
