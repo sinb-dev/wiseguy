@@ -15,6 +15,9 @@ namespace wiseguy {
         public DbSet<Maillist> Maillists {get;set;}
         public DbSet<Participant> Participants {get;set;}
         public DbSet<User> Users {get;set;}
+        public WiseGuyContext() : base() {
+            this.Database.Migrate();
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             Console.WriteLine($"Connecting to database through: {Startup.CurrentConfiguration.GetConnectionString("localDatabase")}");
