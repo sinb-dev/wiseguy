@@ -1,6 +1,6 @@
 #This file builds upon the development image to produce a production image.
 # sudo docker run --rm -d --name pwaptest -v "$(pwd)"/certs:/certs -e TLS_KEY=/certs/domain.key -e TLS_CRT=/certs/domain.crt -p 8080:8080 localhost:443/pwaptest
-FROM pwa
+FROM wiseguy_pwa_dev
 WORKDIR /app
 
 RUN npm run build
