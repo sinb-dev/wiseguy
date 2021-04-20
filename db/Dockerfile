@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/mssql/server
 
 ENV ACCEPT_EULA=Y
 
-ENV SA_PASSWORD=Your_password123
+ENV SA_PASSWORD=Cloud9_district
 
 COPY ./setup.sql /
 COPY ./entrypoint.sh /
