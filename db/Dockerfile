@@ -4,7 +4,8 @@ ENV ACCEPT_EULA=Y
 
 ENV SA_PASSWORD=Your_password123
 
-COPY ./data /
+COPY ./setup.sql /
+COPY ./entrypoint.sh /
 
 ENTRYPOINT [ "/bin/bash", "entrypoint.sh" ]
 
