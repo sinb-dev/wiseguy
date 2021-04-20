@@ -10,7 +10,9 @@ COPY . .
 RUN dotnet build "api.csproj" -c Release -o /app/build
 
 #RUN whereis dotnet-ef
-RUN dotnet ef database update 
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet ef database update
 
 #FROM build AS publish
 #RUN dotnet publish "api.csproj" -c Release -o /app/publish
