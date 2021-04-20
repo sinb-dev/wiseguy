@@ -23,7 +23,6 @@ if [ "$1" = '/opt/mssql/bin/sqlservr' ]; then
       # Note that the container has been initialized so future starts won't wipe changes to the data
 
       touch /tmp/app-initialized
-      /opt/mssql/bin/sqlservr	
     }
 
     initialize_app_database &
