@@ -10,7 +10,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
 COPY vue.config.js ./vue.config.js
 COPY .env ./.env
-COPY .env.production ./.env.production
+COPY .env.production.local ./.env.production.local
 COPY src src
 
 # install project dependencies
