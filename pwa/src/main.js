@@ -1,10 +1,4 @@
 import Vue from 'vue'
-import StartPage from "./pages/StartPage.vue";
-/*import EvaluationForm from './pages/EvaluationForm.vue'
-import TemplateManager from './pages/TemplateManager.vue'
-import ListManager from './pages/ListManager.vue'
-import IssuePage from "./pages/IssuePage.vue";
-import AdminPage from "./pages/Admin.vue";*/
 import NotFound from './pages/NotFound.vue'
 import wb from "./registerServiceWorker";
 import "./components/PageWrapper.vue";
@@ -21,13 +15,14 @@ import 'vue-material/dist/theme/default.css'
 
 import PouchDB from 'pouchdb';
 
-import { MdDialog, MdButton, MdField, MdContent, MdSnackbar, MdCard } from 'vue-material/dist/components'
+import { MdDialog, MdButton, MdField, MdContent, MdSnackbar, MdCard, MdEmptyState } from 'vue-material/dist/components'
 Vue.use(MdDialog);
 Vue.use(MdButton);
 Vue.use(MdField);
 Vue.use(MdContent);
 Vue.use(MdSnackbar);
 Vue.use(MdCard);
+Vue.use(MdEmptyState);
 //Use some interesting new designs
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
@@ -36,21 +31,9 @@ import PageWrapper from './components/PageWrapper.vue';
 
 Vue.use(VueMaterial)
 
-
 Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
 
-const LandingPage = StartPage;
-/*const routes = {
-  '^/$' : LandingPage,
-  '^/eval/[a-zA-Z0-9]+/$' : EvaluationForm,
-  '^/tpl/$' : TemplateManager,
-  '^/tpl/[0-9]+/$' : TemplateManager,
-  '^/list/$' : ListManager,
-  '^/list/[0-9]+/$' : ListManager,
-  '^/issue/[0-9]+/$' : IssuePage,
-  '^/admin/$' : AdminPage,
-}*/
 const routes = {
   '^/$' : "StartPage",
   '^/eval/[a-zA-Z0-9]+/$' : 'EvaluationForm',
@@ -72,7 +55,7 @@ const app = new Vue({
     recent : {_id : "recent", _rev : "", templates:[], lists: []},
     localIssues : {_id : "localIssues", _rev : "", issues : []},
     adminMode : false,
-    UserMessage : "Goddag hr."
+    UserMessage : ""
   },
   methods : {
     

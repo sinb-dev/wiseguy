@@ -1,6 +1,14 @@
 <template>
   <div>
-      <div v-if="copies.length ==0" style="text-align:center;margin-top:200px">Der er hul igennem<br>Hæng i, du får et link til et ark, du skal udfylde</div>
+      <div v-if="copies.length ==0" style="text-align:center;margin-top:200px">
+        <md-empty-state
+          md-rounded
+          
+          md-label="Der er hul igennem"
+          md-description="Hæng i, du får et link til et ark, du skal udfylde">
+        </md-empty-state>
+        
+        </div>
       <div v-else>
         <md-content style="margin-top:16px;padding:8px;" class="md-elevation-1">
           <span class="md-display-3">Hej {{name}}</span>
@@ -23,7 +31,6 @@
           </div>
         </md-content>
       </div>
-      <md-snackbar><span>hmm</span></md-snackbar>
   </div>
 </template>
 

@@ -65,7 +65,6 @@ export default {
                 p => data.append("Phrases", p)
             )
 
-
             var op = this.templateId > 0 ? "tpl/update" : "tpl/new";
             
             var self = this;
@@ -74,6 +73,10 @@ export default {
                 .then(d => {
                     self.templateId == 0 ? self.templateId = d.data.id : 0;
                     self.$root.onTemplateUpdate({ "id": self.templateId, "course": self.template.course, "subject": self.template.subject} );
+                    self.$root.message("Template saved succesfully");
+                })
+                .catch(e => {
+                    self.$root.message("Error :"+e);
                 });
         },
         issue : function() {
@@ -84,7 +87,7 @@ export default {
         },
         templateIssued : function(data) {
             //User issued this template, take him to the list of copies
-            this.$root.go("/issue/"+data.issueId, data);
+            this.$root.go("/issue/"+data.issueId, data) ;
             this.$root.onTemplateIssued(this.templateId,data);
         }
     },

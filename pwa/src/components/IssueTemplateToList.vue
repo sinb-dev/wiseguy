@@ -38,7 +38,8 @@ export default {
                         console.error("Error occured while trying to issue template");
                     }
                     self.$emit("issued", response.data);
-                    
+                    let number = response.data.copies.length
+                    self.$root.message("Sheet succesfully issued to "+number+" participants")
                 });
         },
         

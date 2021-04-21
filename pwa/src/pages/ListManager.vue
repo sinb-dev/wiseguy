@@ -6,7 +6,7 @@
             :emailText="emailsText"></edit-list>
 
         <md-button class="md-secondary" href="#/admin/">Back</md-button>
-        <md-button @click="update">Save template</md-button>
+        <md-button @click="update">Save list</md-button>
     </div>
 </template>
 

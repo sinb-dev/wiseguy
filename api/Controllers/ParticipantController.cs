@@ -103,27 +103,40 @@ namespace wiseguy.Controllers
             using (var context = new WiseGuyContext())
             {
                 //Find all the emails that is not created yet.
-                List<string> nonexisting = new List<string>();
+                Dictionary<string,string> nonexisting = new Dictionary<string, string>();
                 var existing = context.Participants.Where(p=>emails.Contains(p.Email));
-                foreach (string e in emails) {
-                    bool found = false;
-                    foreach (var p in existing) {
-                        if ( p.Email == e ) {
-                            found = true;
-                            break;
-                        }
+                foreach (string row in emails) {
+                    var bits = row.Trim().Split(' ');
+                    var email = "";
+                    var name = "";
+                    if (bits.Length == 1)
+                        email = bits[0];
+                    else if(bits.Length == 2) {
+                        email = bits[1];
+                        name = bits[0];
                     }
-                    if (!found) {
-                        nonexisting.Add(e);
+                    email = email.Trim();
+
+                    if (name == "") {
+                        name = email.IndexOf("@") >= 0? email.Substring(0, email.IndexOf("@")) : email;
+                    }
+
+                    Participant result = context.Participants.Where(p=> p.Email==email).FirstOrDefault();
+
+                    if (result == null) {
+                        nonexisting.Add(email,name);
                     }
                 }
 
                 //Create participants from non existing mails
-                foreach (string email in nonexisting) {
+                foreach (KeyValuePair<string,string> kv in nonexisting) {
+                    string email = kv.Key;
+                    string name = kv.Value;
+
                     Participant p = new Participant {
                         Email = email,
                         AccessToken = WiseGuyUtils.CreateToken(),
-                        Name = email.IndexOf("@") >= 0? email.Substring(0, email.IndexOf("@")) : email,
+                        Name = name,
                     };
                     context.Participants.Add(p);
                     list.Add(p);

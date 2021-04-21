@@ -1,27 +1,41 @@
 <template>
-  <div>Evaluation form
-        
-        <div v-if="!editMode(completed)" class="legend">
-        <evaluation-legend v-for="row in dates"
-            :key="row.symbol"
-            :date="row.date"
-            :symbol="row.symbol"></evaluation-legend>
+  <div>
+        <div v-if="loading" style="position:absolute;left:50%;top:100px">
+            <md-progress-spinner md-mode="indeterminate" style="margin-left:auto;margin-right:auto"></md-progress-spinner>
         </div>
-        <div><strong>Fag: </strong>{{course}}</div>
-        <div><strong>Emne: </strong>{{subject}}</div>
-        <div>Hvor godt kender du disse ord?</div>
-      <table >
-          <tr><th class="phrase">Ord</th><th class="field">Kender ikke</th><th class="field">Hørt om</th><th class="field">Kan forklare</th></tr>
-      <evaluation-phrase    v-for="phrase in phrases"
+        <div v-else>
+            <md-content style="margin-top:16px;padding:8px;height:130px" class="md-elevation-1">
+            <span class="md-headline">Hvor godt kender du disse ord?</span>
+            <div v-if="!editMode(completed)" class="legend">
+            <evaluation-legend v-for="row in dates"
+                :key="row.symbol"
+                :date="row.date"
+                :symbol="row.symbol"></evaluation-legend>
+            </div>
+
+            <span class="md-body-1">
+                <div><strong>Fag: </strong>{{course}}</div>
+                <div><strong>Emne: </strong>{{subject}}</div>
+            </span>
+            </md-content>
+            
+            <md-content style="margin-top:16px;padding:8px;" class="md-elevation-1">
+                <table>
+                    <tr><th class="phrase">Ord</th><th class="field">Kender ikke</th><th class="field">Hørt om</th><th class="field">Kan forklare</th></tr>
+                        <evaluation-phrase    v-for="phrase in phrases"
                             v-bind:phrase="phrase.text"
                             v-bind:id="phrase.id"
                             v-bind:key="phrase.id"
                             :edit="editMode(completed)"
                             :answers="phrase.answers"
                             @cross="oncross"></evaluation-phrase>
-        </table>
-
-        <md-button v-if="editMode(completed)" @click="submit">Send</md-button>
+                </table>
+            </md-content>
+            <md-content  class="md-elevation-1">
+                <md-button href="/#/">Tilbage</md-button>
+                <md-button v-if="editMode(completed)" @click="submit" class="md-primary">Send</md-button>
+            </md-content>
+        </div>
   </div>
 </template>
 
@@ -44,7 +58,8 @@ export default {
             phrases : [],
             answers : {},
             answersByDate : {},
-            symbolsByDate : {}
+            symbolsByDate : {},
+            loading : true
         };
     },
     computed : {
@@ -90,7 +105,13 @@ export default {
 
             var token = this.$root.folder(2);
 
-            this.$root.post("eval/"+token, packet);
+            this.$root.post("eval/"+token, packet)
+            .then(() => {
+                this.$root.message("Mange tak for det!");
+            })
+            .catch(e => {
+                this.$root.message("Error: "+e);
+            });
         },
         load(data) {
         
@@ -157,8 +178,15 @@ export default {
     },
     mounted() {
         var token = this.$root.folder(2);
+        var self = this;
         this.$root.get("eval/"+token)
-            .then(reponse => this.load(reponse.data))
+            .then(reponse => {
+                self.loading = false;
+                self.load(reponse.data)
+        })
+        .catch(e => {
+            this.root.message("Error: "+e)
+        });
     }
 }
 </script>
