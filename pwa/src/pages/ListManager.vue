@@ -11,11 +11,12 @@
 </template>
 
 <script>
-import EditMaillist from '../components/EditMaillist.vue';
 //import PouchDB from 'pouchdb';
+import EditList from '../components/EditMaillist.vue';
 export default {
-  components: { 'edit-list' : EditMaillist },
-    
+    components : {
+        'edit-list' : EditList
+    },
     data() {
         return {
             listId : 0,
@@ -27,7 +28,6 @@ export default {
     },
     methods : {
         load(data) {
-            console.log(data);
             this.list = data;
         },
         update() {
@@ -47,7 +47,9 @@ export default {
                 .then(d => {
                     self.listId == 0 ? self.listId = d.data.id : 0;
                     self.$root.onMaillistUpdate({ "id": self.listId, "name": self.list.name} );
-                });
+                    self.$root.message("Mail list saved successfully");
+                })
+                .catch(m => self.$root.message("Error: "+m));
         }
     },
     computed : {

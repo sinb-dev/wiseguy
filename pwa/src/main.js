@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import StartPage from "./pages/StartPage.vue";
-import EvaluationForm from './pages/EvaluationForm.vue'
+/*import EvaluationForm from './pages/EvaluationForm.vue'
 import TemplateManager from './pages/TemplateManager.vue'
 import ListManager from './pages/ListManager.vue'
+import IssuePage from "./pages/IssuePage.vue";
+import AdminPage from "./pages/Admin.vue";*/
 import NotFound from './pages/NotFound.vue'
 import wb from "./registerServiceWorker";
-import IssuePage from "./pages/IssuePage.vue";
-import AdminPage from "./pages/Admin.vue";
+import "./components/PageWrapper.vue";
 
 //Full monty
 /*import VueMaterial from 'vue-material'
@@ -31,6 +32,7 @@ Vue.use(MdCard);
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 //import 'vue-material/dist/theme/default-dark.css' // This line here
+import PageWrapper from './components/PageWrapper.vue';
 
 Vue.use(VueMaterial)
 
@@ -39,7 +41,7 @@ Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
 
 const LandingPage = StartPage;
-const routes = {
+/*const routes = {
   '^/$' : LandingPage,
   '^/eval/[a-zA-Z0-9]+/$' : EvaluationForm,
   '^/tpl/$' : TemplateManager,
@@ -47,10 +49,19 @@ const routes = {
   '^/list/$' : ListManager,
   '^/list/[0-9]+/$' : ListManager,
   '^/issue/[0-9]+/$' : IssuePage,
-
   '^/admin/$' : AdminPage,
-
+}*/
+const routes = {
+  '^/$' : "StartPage",
+  '^/eval/[a-zA-Z0-9]+/$' : 'EvaluationForm',
+  '^/tpl/$' : 'TemplateManager',
+  '^/tpl/[0-9]+/$' : 'TemplateManager',
+  '^/list/$' : 'ListManager',
+  '^/list/[0-9]+/$' : 'ListManager',
+  '^/issue/[0-9]+/$' : 'IssuePage',
+  '^/admin/$' : 'Admin',
 }
+
 const server = process.env.VUE_APP_WISEGUY_API_HOSTNAME+"/";
 const axios = require("axios");
 const DB = new PouchDB("wiseguy");
@@ -60,9 +71,15 @@ const app = new Vue({
     pageData : null,
     recent : {_id : "recent", _rev : "", templates:[], lists: []},
     localIssues : {_id : "localIssues", _rev : "", issues : []},
-    adminMode : false
+    adminMode : false,
+    UserMessage : "Goddag hr."
   },
   methods : {
+    
+    message(message) {
+      this.UserMessage = message;
+      setTimeout(() => {this.UserMessage = ""},4000)
+    },
     server(request) {
       return server+request;
     },
@@ -156,18 +173,22 @@ const app = new Vue({
       for (var k in routes) {
         var regex = new RegExp(k);
         if (regex.test(this.currentRoute)) {
-          return routes[k]
+          return routes[k];
         }
       }
       return NotFound
+    },
+    showUserMessage() {
+      return this.UserMessage != "";
     }
   },
   render(c) {
-    if (this.ViewComponent != NotFound) {
+    return c(PageWrapper);
+    /*if (this.ViewComponent != NotFound) {
      
       return c(this.ViewComponent);
     }
-    return c(NotFound);
+    return c(NotFound);*/
   },
   created() {
     if (this.$workbox) {
@@ -180,9 +201,7 @@ const app = new Vue({
     this.loadRecent();
     this.loadLocalIssues();
     console.info("Remote API server: "+process.env.VUE_APP_WISEGUY_API_HOSTNAME)
-    
   }
-
 }).$mount('#app')
 window.onhashchange = function() {
   app.currentRoute = document.location.hash.substr(1)

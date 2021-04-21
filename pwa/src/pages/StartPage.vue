@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div v-if="copies.length ==0">Der er hul igennem. Hæng i, du får et ark, du skal udfylde</div>
+      <div v-if="copies.length ==0" style="text-align:center;margin-top:200px">Der er hul igennem<br>Hæng i, du får et link til et ark, du skal udfylde</div>
       <div v-else>
         <md-content style="margin-top:16px;padding:8px;" class="md-elevation-1">
           <span class="md-display-3">Hej {{name}}</span>
@@ -15,14 +15,15 @@
           <div class="md-layout" style="height:36px" v-for="copy in copies"
               :key="copy.token">
             <div class="md-layout-item" style="margin-top:auto;margin-bottom:auto">{{copy.course}} > {{copy.subject}}</div>
-            <div class="md-layout-item" style="margin-top:auto;margin-bottom:auto">{{date_formatted(copy.date)}} kl. {{time_formatted(copy.date)}}</div>
+            <div class="md-layout-item" style="margin-top:auto;margin-bottom:auto">{{date_formatted(copy.date)}} {{time_formatted(copy.date)}}</div>
             <div class="md-layout-item">
               <md-button class="md-dense md-raised md-primary" :href="copy_link(copy.token)" v-if="copy.completed.getFullYear() == '0001'">Udfyld arket</md-button>
-              <md-button :href="copy_link(copy.token)" v-else>{{date_formatted(copy.completed)}} kl. {{time_formatted(copy.completed)}}</md-button>
+              <md-button :href="copy_link(copy.token)" v-else>{{date_formatted(copy.completed)}} {{time_formatted(copy.completed)}}</md-button>
             </div>
           </div>
         </md-content>
       </div>
+      <md-snackbar><span>hmm</span></md-snackbar>
   </div>
 </template>
 
@@ -32,13 +33,7 @@ export default {
   data() {
     return {
       name : "",
-      copies : [{
-        course : "Databaseprogrammering",
-        subject : "joins",
-        token : "zAC8dxvYWeG44X8hUu7LXdnXV9SW0hcL",
-        completed  : new Date(),
-        date : new Date(),
-      }]
+      copies : []
     }
   },
   methods : {

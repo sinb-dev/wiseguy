@@ -85,7 +85,9 @@ namespace wiseguy.Controllers
                 SheetTemplate template = null;
                 try {
                     template = context.Templates.First(t => t.Id == templateId);
-                } catch {}
+                } catch {
+
+                }
                 if (template == null)
                     return Problem("Unknown template");
                 
