@@ -1,22 +1,30 @@
 <template>
   <div>
-      <span v-for="answer in issues" 
-        :key="answer" :class="getclass(answer)">
-      </span>
+      <issue-answer-graph-bar v-for="issue in issues" 
+        :key="issue.id" :color="getcolor(issue.issueId)" :classnames="getclass(issue.count)">
+      </issue-answer-graph-bar>
     </div>
 </template>
 
 <script>
+import IssueAnswerGraphBar from './IssueAnswerGraphBar.vue';
 export default {
+  components: { IssueAnswerGraphBar },
     props: {
         issues : Array,
-        max : Number
+        max : Number,
+        issuecolors : Object
     },
     methods: {
         getclass(count) {
-            
-            var s = parseInt(count/this.max*10);
+            var s = Math.ceil(count/this.max*10);
             return "issueAnswer s"+s
+        },
+        getcolor(issueId) {
+            
+            if (this.issuecolors[issueId])
+                return this.issuecolors[issueId]
+            return "#cccccc";
         }
     }
 }
@@ -37,4 +45,8 @@ span.issueAnswer.s3 { height:6px; }
 span.issueAnswer.s4 { height:8px; }
 span.issueAnswer.s5 { height:10px; }
 span.issueAnswer.s6 { height:12px; }
+span.issueAnswer.s7 { height:14px; }
+span.issueAnswer.s8 { height:16px; }
+span.issueAnswer.s9 { height:18px; }
+span.issueAnswer.s10 { height:20px; }
 </style>

@@ -4,23 +4,8 @@
         <span class="md-headline">Issue {{issue.course}} > {{issue.subject}}</span>
       </md-content>
       <br>
-      <md-content class="md-elevation-1" style="padding:16px">
-        <span class="md-subheading">Deltagernes kendskab</span>
-        <md-table>
-            <md-table-row>
-              <md-table-head>Ord</md-table-head>
-              <md-table-head>Kender ikke</md-table-head>
-              <md-table-head>Har hørt om</md-table-head>
-              <md-table-head>Kan forklare</md-table-head>
-            </md-table-row>
-            <md-table-row v-for="phrase in status.phrases" :key="phrase.id">
-                <md-table-cell>{{phrase.phrase}}</md-table-cell>
-                <md-table-cell v-for="issue in phrase.answers" :key="issue">
-                    <issue-answer :max="10" :issues="issue"></issue-answer>
-                </md-table-cell>
-            </md-table-row>
-        </md-table>
-      </md-content>
+      
+      <issue-performance v-if="issueId != '0'" :status="status" :issueId="issueId"></issue-performance>
       <br>
       <md-content class="md-elevation-1">
       <md-table>
@@ -51,50 +36,50 @@
 </template>
 
 <script>
-import IssueAnswerGraph from '../components/IssueAnswerGraph.vue';
+import IssuePerformance from '../components/IssuePerformance.vue';
 export default {
     components : {
-        'issue-answer' : IssueAnswerGraph
+        IssuePerformance
     },
     data() {
         return {
             issue : {
                 copies : [],
-            
-        },
-        status : {
+            },
+            issueId : "0",
+            status : {
                 latest_submission : "2021-04-20T12:00:00",
                 phrases : [
-                    {   phrase : "Inner join",
+                    {   phrase : "Inner join", id:1,
                         answers : {
-                            "1" : { 
-                                '2001' : 5,
-                                '2003' : 3
-                            },
-                            "2" : { 
-                                '2001' : 2,
-                                '2003' : 1
-                            },
-                            "3" : { 
-                                '2001' : 5,
-                                '2003' : 7
-                            }
+                            "1" : [ //answer type
+                                { issueId : 2001, count : 5 }, //issueId and number of answer with type 1
+                                { issueId : 2003, count : 3 },
+                            ],
+                            "2" : [ 
+                                { issueId : 2001, count : 5 }, //issueId and number of answer with type 2
+                                { issueId : 2003, count : 3 },
+                            ],
+                            "3" : [ 
+                                { issueId : 2001, count : 5 },
+                                { issueId : 2003, count : 3 },
+                            ],
                         }
                     },
-                    {   phrase : "Exists join",
+                    {   phrase : "Exists join", id:2,
                         answers : {
-                            "1" : { //answer type
-                                '2001' : 5, //issueId : number of answer with type 1
-                                '2003' : 3 //issueId : number of answer with type 1
-                            },
-                            "2" : { 
-                                '2001' : 2,
-                                '2003' : 1
-                            },
-                            "3" : { 
-                                '2001' : 5,
-                                '2003' : 7
-                            }
+                            "1" : [ //answer type
+                                { issueId : 2001, count : 5 }, //issueId and number of answer with type 1
+                                { issueId : 2003, count : 3 },
+                            ],
+                            "2" : [ 
+                                { issueId : 2001, count : 5 }, //issueId and number of answer with type 2
+                                { issueId : 2003, count : 3 },
+                            ],
+                            "3" : [ 
+                                { issueId : 2001, count : 5 },
+                                { issueId : 2003, count : 3 },
+                            ],
                         }
                     }
                 ]
@@ -112,12 +97,13 @@ export default {
         if (this.$root.pageData != null) {
             this.issue = this.$root.pageData;
         } else {
-            var issueId = this.$root.folder(2);
-            if (isNaN(issueId) || !issueId) {
+            this.issueId = this.$root.folder(2);
+            if (isNaN(this.issueId) || !this.issueId || this.issueId == "0") {
                 console.error("missing issue id")
                 return;
             }
-            this.$root.get("issue/"+issueId+"/copies").then(r => this.issue = r.data);
+            
+            this.$root.get("issue/"+this.issueId+"/copies").then(r => this.issue = r.data);
         }
     }
 }

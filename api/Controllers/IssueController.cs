@@ -36,7 +36,27 @@ namespace wiseguy.Controllers
                 return Ok(IssuedCopiesDTO.Construct(issue));
             }
         }
-        
+
+        [HttpGet("{issueId}/performance")]
+        public async Task<ActionResult<IssuePerformanceDTO>> GetIssuePerformance(int issueId)
+        {
+            using(var context = new WiseGuyContext()) {
+                SheetIssue issue = null;
+                try {
+                    issue = context.Issues
+                        .Include(i=>i.Maillist)
+                        .Include(i=>i.Maillist.Participants)
+                        .Include(t=>t.SheetTemplate)
+                        .First(i => i.Id == issueId);
+                    
+                } catch {}
+
+                if (issue == null)
+                    return Problem("Unknown issue");
+                
+                return Ok(IssuePerformanceDTO.Construct(issue));
+            }
+        }
 
         [HttpPost("{templateId}/issue")]
         public async Task<ActionResult<IssuedCopiesDTO>> IssueTemplateForEmails(int templateId, [FromForm] int maillistId)
