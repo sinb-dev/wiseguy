@@ -1,3 +1,4 @@
+#/usr/share/python
 import os
 import getopt
 import sys
@@ -10,15 +11,17 @@ opts, args = getopt.getopt(sys.argv[1:], '',  ["renew-certificate", "help"]);
 def renew_certificates():
 	print "Renewing certificate from let's encrypt certbot with elevated privileges"
 	os.system("sudo certbot certonly --standalone")
-	
+
 
 for o, a in opts:
 	if o == "--help":
 		print """Usage: ./build [--renew-certificate]""";
-		
 	if o == "--renew-certificate":
 		renew_certificates()
 
+os.system("git pull");
+os.system("docker build -t wiseguy_pwa_dev ./pwa")
+os.system("docker-compose build")
 
 
 #BUILD IMAGES
