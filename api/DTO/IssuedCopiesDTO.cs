@@ -20,6 +20,16 @@ namespace wiseguy
             public int[] otherIssues {get;set;}
         }
 
+        
+        public class status {
+            public class answer {
+                public string phrase {get;set;}
+                public Dictionary<AnswerType, int> phrases {get; set;} = new Dictionary<AnswerType, int>();
+            }
+            public DateTime lastest_submission = DateTime.Now;
+            public List<answer> phrases {get;set;} = new List<answer>();
+        }
+
         public static IssuedCopiesDTO Construct(SheetIssue issue) {
             IssuedCopiesDTO dto = new IssuedCopiesDTO();
 

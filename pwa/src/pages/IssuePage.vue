@@ -15,7 +15,9 @@
             </md-table-row>
             <md-table-row v-for="phrase in status.phrases" :key="phrase.id">
                 <md-table-cell>{{phrase.phrase}}</md-table-cell>
-                <md-table-cell v-for="answers in phrase.answers" :key="answers">{{answers}}</md-table-cell>
+                <md-table-cell v-for="issue in phrase.answers" :key="issue">
+                    <issue-answer :max="10" :issues="issue"></issue-answer>
+                </md-table-cell>
             </md-table-row>
         </md-table>
       </md-content>
@@ -49,8 +51,11 @@
 </template>
 
 <script>
-
+import IssueAnswerGraph from '../components/IssueAnswerGraph.vue';
 export default {
+    components : {
+        'issue-answer' : IssueAnswerGraph
+    },
     data() {
         return {
             issue : {
@@ -62,16 +67,34 @@ export default {
                 phrases : [
                     {   phrase : "Inner join",
                         answers : {
-                            "1" : 5,
-                            "2" : 3,
-                            "3" : 4
+                            "1" : { 
+                                '2001' : 5,
+                                '2003' : 3
+                            },
+                            "2" : { 
+                                '2001' : 2,
+                                '2003' : 1
+                            },
+                            "3" : { 
+                                '2001' : 5,
+                                '2003' : 7
+                            }
                         }
                     },
                     {   phrase : "Exists join",
                         answers : {
-                            "1" : 7,
-                            "2" : 2,
-                            "3" : 1
+                            "1" : { //answer type
+                                '2001' : 5, //issueId : number of answer with type 1
+                                '2003' : 3 //issueId : number of answer with type 1
+                            },
+                            "2" : { 
+                                '2001' : 2,
+                                '2003' : 1
+                            },
+                            "3" : { 
+                                '2001' : 5,
+                                '2003' : 7
+                            }
                         }
                     }
                 ]

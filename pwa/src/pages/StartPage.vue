@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div v-if="copies.length ==0" style="text-align:center;margin-top:200px">
+      <div v-if="copies.length ==0" style="text-align:center;margin-top:50px">
         <md-empty-state
           md-rounded
           
