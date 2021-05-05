@@ -72,7 +72,7 @@ namespace wiseguy
             {
                 endpoints.MapControllers();
             });
-
+            #if DEBUG
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -81,6 +81,7 @@ namespace wiseguy
                 // To serve SwaggerUI at application's root page, set the RoutePrefix property to an empty string.
                 c.RoutePrefix = "docs";
             });
+            #endif
         }
     }
     public class WiseGuyUtils {

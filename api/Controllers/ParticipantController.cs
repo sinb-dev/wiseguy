@@ -137,6 +137,7 @@ namespace wiseguy.Controllers
                         Email = email,
                         AccessToken = WiseGuyUtils.CreateToken(),
                         Name = name,
+                        Created = DateTime.Now,
                     };
                     context.Participants.Add(p);
                     list.Add(p);

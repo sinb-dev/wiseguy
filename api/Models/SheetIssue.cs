@@ -36,6 +36,8 @@ namespace wiseguy {
                     context.Copies.Add(c);
                 }
                 context.Issues.Add(issue);
+                list.LastUsed = DateTime.Now;
+                template.LastUsed = DateTime.Now;
                 context.SaveChangesAsync();
                 return issue;
             }

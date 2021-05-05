@@ -4,6 +4,7 @@ namespace wiseguy {
     {
         public string name {get;set;}
         public IList<string> emails {get;set;}
+        public string session {get;set;}
         public Maillist GetMaillist() {
             var list = new Maillist();
             list.Name = name;

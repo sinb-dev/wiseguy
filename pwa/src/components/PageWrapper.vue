@@ -1,8 +1,9 @@
 <template>
   <div>
-      <component :is="component"></component>
+      <component :is="component" v-if="authorized" :key="done"></component>
+      <!--<login-page v-else ></login-page>-->
       
-      <md-snackbar :md-active.sync="$root.showUserMessage"><span>{{$root.UserMessage}}</span></md-snackbar>
+      <md-snackbar :md-active.sync="$root.DisplayMessage"><span>{{$root.UserMessage}}</span></md-snackbar>
   </div>
 </template>
 
@@ -14,8 +15,17 @@ import IssuePage from '../pages/IssuePage.vue';
 import ListManager from '../pages/ListManager.vue';
 import NotFound from '../pages/NotFound.vue';
 import StartPage from '../pages/StartPage.vue';
-import TemplateManager from '../pages/TemplateManager';
+import TemplateManager from '../pages/TemplateManager.vue';
+import LoginPage from '../pages/LoginPage.vue';
 export default {
+    data : () => {
+        return {
+            done: false,
+            requiresLogin : ['Admin','IssuePage','ListManager','TemplateManager']
+        }
+    },
+    methods : {
+    },
     components: {
         'Admin' : Admin, 
         'EvaluationForm' : EvaluationForm, 
@@ -23,12 +33,21 @@ export default {
         'ListManager' : ListManager, 
         'NotFound' : NotFound, 
         'StartPage' : StartPage, 
-        'TemplateManager' : TemplateManager
+        'TemplateManager' : TemplateManager,
+        'LoginPage' : LoginPage
     },
     computed: {
         component() {
             return this.$root.ViewComponent;
+        },
+        authorized() {
+            var auth = this.requiresLogin.indexOf(this.$root.ViewComponent) == -1 || this.$root.isLoggedIn()
+            if (!auth) this.$root.go("login");
+            return auth;
         }
+    },
+    mounted() {
+        console.log("Render pagewrapper")
     }
     
 }

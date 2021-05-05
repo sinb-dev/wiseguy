@@ -35,19 +35,21 @@ Vue.prototype.$workbox = wb;
 Vue.config.productionTip = false
 
 const routes = {
-  '^/$' : "StartPage",
-  '^/eval/[a-zA-Z0-9]+/$' : 'EvaluationForm',
-  '^/tpl/$' : 'TemplateManager',
-  '^/tpl/[0-9]+/$' : 'TemplateManager',
-  '^/list/$' : 'ListManager',
-  '^/list/[0-9]+/$' : 'ListManager',
-  '^/issue/[0-9]+/$' : 'IssuePage',
-  '^/admin/$' : 'Admin',
+  '^\\/?$' : "StartPage",
+  '^/eval/[a-zA-Z0-9]+\\/?$' : 'EvaluationForm',
+  '^/tpl\\/?$' : 'TemplateManager',
+  '^/tpl/[0-9]+\\/?$' : 'TemplateManager',
+  '^/list\\/?$' : 'ListManager',
+  '^/list/[0-9]+\\/?$' : 'ListManager',
+  '^/issue/[0-9]+\\/?$' : 'IssuePage',
+  '^/admin\\/?$' : 'Admin',
+  '^/login\\/?$' : 'LoginPage',
 }
 
 const server = process.env.VUE_APP_WISEGUY_API_HOSTNAME+"/";
 const axios = require("axios");
 const DB = new PouchDB("wiseguy");
+var loggedIn = false;
 const app = new Vue({
   data : {
     currentRoute : "",
@@ -55,13 +57,16 @@ const app = new Vue({
     recent : {_id : "recent", _rev : "", templates:[], lists: []},
     localIssues : {_id : "localIssues", _rev : "", issues : []},
     adminMode : false,
-    UserMessage : ""
+    UserMessage : false,
+    DisplayMessage : false,
+    
   },
   methods : {
     
     message(message) {
       this.UserMessage = message;
-      setTimeout(() => {this.UserMessage = ""},4000)
+      this.DisplayMessage = true;
+      setTimeout(() => {this.UserMessage = ""; this.DisplayMessage = false},4000)
     },
     server(request) {
       return server+request;
@@ -78,7 +83,9 @@ const app = new Vue({
       return axios.get(server+path)
     },
     go(path, data) {
-      document.location.hash = "#"+path;
+      console.log("Going from "+document.location.hash+" to #"+path);
+
+      document.location.href = "#"+"/"+path.trim("/")+"/";
       this.pageData = data;
     },
     folder(idx) {
@@ -149,6 +156,55 @@ const app = new Vue({
           self.localIssues = [];
   
       });
+    },
+    session(s) {
+      let cookieStr = "";
+      if (s)
+        cookieStr="session="+s+";max-age=840;SameSite=Lax;secure"
+      
+      document.cookie = cookieStr;
+      let session_id = document.cookie.split('; ').find(row => row.startsWith('session='))
+      if (session_id)
+        return session_id.split('=')[1];
+        
+      return "";
+    },
+    verifyLoggedIn() {
+      if (this.session())
+        return this.get("user/login/"+this.session())
+          .then(() => loggedIn = true)
+          .catch( () => loggedIn = false);
+      else
+        loggedIn = false;
+    },
+    isLoggedIn() {
+      return loggedIn;
+    },
+    logUserIn(username,password,callback) {
+      let data = new FormData();
+      data.append("username",username);
+      data.append("password",password);
+      let self = this;
+      this.post("user/login", data)
+        .then((response)=> {
+          self.message("Du er logget ind!");
+
+          loggedIn = true;
+          self.session(response.data);
+          setTimeout(() => {
+            if (callback !== undefined)
+              callback() 
+            self.go("admin");
+            },1500)
+        } )
+        .catch(function (e) {
+          console.error(e);
+          self.sending = false;
+          self.message("Kunne ikke logge dig ind. Kontrollér brugernavn og kodeord");
+        });
+    },
+    logUserOut() {
+      return this.get("user/logout/"+this.session())
     }
   },
   computed : {
@@ -160,12 +216,10 @@ const app = new Vue({
         }
       }
       return NotFound
-    },
-    showUserMessage() {
-      return this.UserMessage != "";
     }
   },
   render(c) {
+    
     return c(PageWrapper);
     /*if (this.ViewComponent != NotFound) {
      
@@ -181,14 +235,18 @@ const app = new Vue({
     }
     //var self = this;
     //var db = new PouchDB("wiseguy");
+    this.verifyLoggedIn();
     this.loadRecent();
     this.loadLocalIssues();
+
     console.info("Remote API server: "+process.env.VUE_APP_WISEGUY_API_HOSTNAME)
+
+    
   }
 }).$mount('#app')
 window.onhashchange = function() {
   app.currentRoute = document.location.hash.substr(1)
-  if (app.currentRoute.substr(-1,1) != "/")
-    document.location.hash += "/";
 }
-window.onhashchange();
+
+//window.onhashchange();
+setInterval(() => document.getElementsByTagName("title").innerText = document.location.hash,16)

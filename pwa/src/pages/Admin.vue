@@ -20,6 +20,7 @@
             v-bind:key="r.issueId"><a v-bind:href="issurl(r.issueId)">{{r.issueId}}</a></li>
       </ol>
       <md-button @click="disableAdminMode" :disabled="!$root.adminMode">Disable admin mode</md-button>
+      <md-button @click="logout" :disabled="!$root.adminMode" class="md-accent">Logout</md-button>
   </div>
 </template>
 
@@ -37,9 +38,14 @@ export default {
     },
     disableAdminMode() {
       this.$root.adminMode = false;  
+    },
+    logout() {
+      this.$root.logUserOut()
+        .then(() => this.$root.go(""))
     }
   },
   mounted() {
+    
     this.$root.adminMode = true;
   }
 }

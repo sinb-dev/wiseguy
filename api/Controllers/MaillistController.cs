@@ -19,11 +19,14 @@ namespace wiseguy.Controllers
         [HttpPost("new")]
         public async Task<ActionResult<String>> NewMaillist([FromForm] MaillistNewDTO listdata)
         {
+            if (!UserController.IsLoggedIn(listdata.session))
+                this.Unauthorized();
             
             using(var context = new WiseGuyContext()) {
                 Maillist list = listdata.GetMaillist();
 
                 if (list != null) {
+                    list.Created = DateTime.Now;
                     context.Maillists.Add( list );
                     await context.SaveChangesAsync();
                     await this.AddParticipants(list.Id, listdata.emails);
@@ -39,6 +42,9 @@ namespace wiseguy.Controllers
         [HttpPut("update")]
         public async Task<ActionResult<String>> UpdateMaillist([FromForm] MaillistUpdateDTO listdata)
         {
+            if (!UserController.IsLoggedIn(listdata.session))
+                this.Unauthorized();
+
             if (listdata.id == 0) {
                 return Problem("Error in data. Id must not be 0");
             }
@@ -84,7 +90,23 @@ namespace wiseguy.Controllers
                 return Ok(MaillistUpdateDTO.Construct(maillist));
             }
         }
-        
+        [HttpGet("recent")]
+        public ActionResult<String> GetRecent()
+        {
+            
+            using(var context = new WiseGuyContext()) {
+                MaillistNameAndEmailCount dto = new MaillistNameAndEmailCount();
+
+                try {
+                    var lists = context.Maillists.Include(list=>list.Participants);
+                    foreach (var l in lists) {
+                        dto.Add(l.Id, l.Name, l.Participants.Count);
+                    }
+                } catch {}
+
+                return Ok(dto.GetList());
+            }
+        }
         [HttpGet("lists")]
         public ActionResult<String> GetLists()
         {

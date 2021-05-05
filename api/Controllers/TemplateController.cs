@@ -22,6 +22,7 @@ namespace wiseguy.Controllers
             using(var context = new WiseGuyContext()) {
                 var o = data.GetSheetTemplate();
                 if (o != null) {
+                    o.Created = DateTime.Now;
                     context.Templates.Add( o );
                     await context.SaveChangesAsync();
                     var response = new Dictionary<string,int> {

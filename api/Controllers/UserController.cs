@@ -12,19 +12,14 @@ namespace wiseguy.Controllers
     [Route("user")]
     public class UserController : ControllerBase
     {
-        class form {
-            public string course {get;set;}
-            public string subject {get;set;}
-            public List<Phrase> phrases {get;set;} = new List<Phrase>();
-        }
-
         public UserController(ILogger<EvaluationController> logger)
         {
         }
 
-        [HttpPost("create")]
-        public async Task<ActionResult<String>> CreateUser([FromForm]IDictionary<string, string> data)
+        [HttpPost("{session}/create")]
+        public async Task<ActionResult<String>> CreateUser(string session, [FromForm]IDictionary<string, string> data)
         {
+            if (!IsLoggedIn(session)) return Unauthorized();
             using(var context = new WiseGuyContext()) {
                 string username = data.ContainsKey("username") ? data["username"] : "";
                 string password = data.ContainsKey("password") ? data["password"] : "";
@@ -64,6 +59,28 @@ namespace wiseguy.Controllers
                 await context.SaveChangesAsync();
                 return Ok(user.Session);
             }
+        }
+        [HttpGet("login/{session}")]
+        public static ActionResult<bool> requestAccessStatus(string session) 
+        {
+            if (IsLoggedIn(session))
+                return true;
+            return false;
+        }
+        [HttpGet("logout/{session}")]
+        public static ActionResult<string> requestLogout(string session) 
+        {
+            using(var context = new WiseGuyContext()) {
+                try {
+                    var user = context.Users.Where(u => u.Session == session).First();
+                    user.Session = "";
+                    context.SaveChanges();
+                    return "ok";
+                } catch {
+
+                }
+            }
+            return "error";
         }
         public static bool IsLoggedIn(string session) 
         {

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace wiseguy
         public string Name {get;set;}
         public string AccessToken {get;set;}
         public IList<Maillist> Maillists {get;set;} = new List<Maillist>();
+        public DateTime Created {get;set;}
 
         public static List<Participant> GetParticipantsFromEmails(List<string> emails) 
         {
